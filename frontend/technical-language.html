@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>SmartHire | Select Language</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Montserrat:wght@600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+  <!-- Main CSS -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+<!-- Background -->
+<div class="bg-effects">
+  <span></span><span></span><span></span>
+</div>
+
+<!-- Navbar -->
+<nav class="navbar">
+  <div class="logo">SmartHire</div>
+  <div class="nav-actions">
+    <a href="candidate-interview.html" class="nav-link">Back</a>
+  </div>
+</nav>
+
+<!-- Hero -->
+<section class="hero dashboard">
+  <h1>Select Programming Language</h1>
+  <p>This will tailor your technical interview questions</p>
+</section>
+
+<!-- Language Options -->
+<section class="features">
+
+  <div class="card reveal" onclick="startInterview('c')">
+    <i class="fa-solid fa-c"></i>
+    <span>C Programming</span>
+    <small>Core concepts & logic</small>
+  </div>
+
+  <div class="card reveal" onclick="startInterview('python')">
+    <i class="fa-brands fa-python"></i>
+    <span>Python</span>
+    <small>Data structures & scripting</small>
+  </div>
+
+  <div class="card reveal" onclick="startInterview('java')">
+    <i class="fa-brands fa-java"></i>
+    <span>Java</span>
+    <small>OOP & problem solving</small>
+  </div>
+
+</section>
+
+<footer>
+  © 2026 SmartHire • Technical Interview
+</footer>
+
+<script>
+function startInterview(lang) {
+  window.location.href = `technical-interview.html?lang=${lang}`;
+}
+</script>
+
+</body>
+</html>

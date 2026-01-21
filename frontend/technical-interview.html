@@ -1,0 +1,181 @@
+// ======================================
+// TECHNICAL INTERVIEW – FINAL STABLE LOGIC
+// ======================================
+
+document.addEventListener("DOMContentLoaded", () => {
+
+  // -------------------------------
+  // ELEMENTS
+  // -------------------------------
+  const questionText = document.getElementById("questionText");
+  const optionsBox = document.getElementById("optionsBox");
+  const nextBtn = document.getElementById("nextBtn");
+  const timerEl = document.getElementById("timer");
+
+  // -------------------------------
+  // URL PARAMS (LANGUAGE)
+  // -------------------------------
+  const params = new URLSearchParams(window.location.search);
+  const selectedLanguage = (params.get("lang") || "c").toUpperCase();
+
+  // -------------------------------
+  // STATE
+  // -------------------------------
+  let currentIndex = 0;
+  let selectedAnswer = null;
+  let timer = null;
+  let timeLeft = 60;
+
+  // -------------------------------
+  // QUESTIONS (TEMP – BACKEND READY)
+  // -------------------------------
+  const questions = [
+    {
+      question: "What is the time complexity of binary search?",
+      options: ["O(n)", "O(log n)", "O(n log n)", "O(1)"],
+      correct: "O(log n)"
+    },
+    {
+      question: "Which data structure follows FIFO?",
+      options: ["Stack", "Queue", "Tree", "Graph"],
+      correct: "Queue"
+    },
+    {
+      question: "What does SQL stand for?",
+      options: [
+        "Structured Query Language",
+        "Simple Query Language",
+        "Statement Query Logic",
+        "Sequential Query Language"
+      ],
+      correct: "Structured Query Language"
+    }
+  ];
+
+  // -------------------------------
+  // REVIEW DATA (FOR INSIGHTS)
+  // -------------------------------
+  const reviewData = {
+    meta: {
+      type: "Technical Interview",
+      language: selectedLanguage,
+      date: new Date().toLocaleDateString()
+    },
+    results: []
+  };
+
+  // -------------------------------
+  // TIMER
+  // -------------------------------
+  function startTimer() {
+    clearInterval(timer);
+    timeLeft = 60;
+    updateTimerUI();
+
+    timer = setInterval(() => {
+      timeLeft--;
+      updateTimerUI();
+
+      if (timeLeft <= 0) {
+        clearInterval(timer);
+        saveAnswer(null);
+        goNext();
+      }
+    }, 1000);
+  }
+
+  function updateTimerUI() {
+    if (timerEl) {
+      timerEl.innerText = `⏱️ ${timeLeft}s`;
+    }
+  }
+
+  // -------------------------------
+  // LOAD QUESTION
+  // -------------------------------
+  function loadQuestion() {
+    selectedAnswer = null;
+    optionsBox.innerHTML = "";
+
+    const q = questions[currentIndex];
+    questionText.innerText = q.question;
+
+    q.options.forEach(option => {
+      const label = document.createElement("label");
+      label.innerHTML = `
+        <input type="radio" name="option" value="${option}">
+        ${option}
+      `;
+
+      label.addEventListener("click", () => {
+        selectedAnswer = option;
+      });
+
+      optionsBox.appendChild(label);
+    });
+
+    startTimer();
+  }
+
+  // -------------------------------
+  // SAVE ANSWER
+  // -------------------------------
+  function saveAnswer(answer) {
+    const q = questions[currentIndex];
+
+    reviewData.results.push({
+      question: q.question,
+      correct: q.correct,
+      user: answer || "No Answer",
+      isCorrect: answer === q.correct,
+      timeTaken: 60 - timeLeft
+    });
+  }
+
+  // -------------------------------
+  // NEXT LOGIC
+  // -------------------------------
+  function goNext() {
+    currentIndex++;
+
+    if (currentIndex >= questions.length) {
+      finishInterview();
+    } else {
+      loadQuestion();
+    }
+  }
+
+  // -------------------------------
+  // BUTTON CLICK
+  // -------------------------------
+  nextBtn.addEventListener("click", () => {
+    if (!selectedAnswer) {
+      alert("Please select an option");
+      return;
+    }
+
+    clearInterval(timer);
+    saveAnswer(selectedAnswer);
+    goNext();
+  });
+
+  // -------------------------------
+  // FINISH
+  // -------------------------------
+  function finishInterview() {
+    clearInterval(timer);
+
+    localStorage.setItem(
+      "interviewReview",
+      JSON.stringify(reviewData)
+    );
+
+    window.location.href = "candidate-insights.html";
+  }
+
+  // -------------------------------
+  // INIT
+  // -------------------------------
+  loadQuestion();
+
+});

@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>SmartHire | Interview Center</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Montserrat:wght@600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+  <!-- Main CSS -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+<!-- Background -->
+<div class="bg-effects">
+  <span></span><span></span><span></span>
+</div>
+
+<!-- Navbar -->
+<nav class="navbar">
+  <div class="logo">SmartHire</div>
+
+  <div class="nav-actions">
+    <button id="themeToggle" class="theme-btn">
+      <i class="fa-solid fa-moon"></i>
+    </button>
+
+    <div class="profile-menu">
+      <i class="fa-solid fa-user"></i>
+      <div class="profile-dropdown">
+        <a href="candidate-dashboard.html">Dashboard</a>
+        <a href="candidate-resume.html">Resume Center</a>
+        <a href="profile.html">Profile</a>
+        <a href="login.html">Logout</a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- Hero -->
+<section class="hero dashboard">
+  <h1>Interview Center</h1>
+  <p>Practice, analyze and improve your interview performance</p>
+</section>
+
+<!-- Interview Options -->
+<section class="features">
+
+  <a href="mock-interview.html" class="card reveal">
+    <i class="fa-solid fa-microphone"></i>
+    <span>AI Mock Interview</span>
+    <small>Full interview simulation</small>
+  </a>
+
+  <!-- Technical Interview (Modal Trigger) -->
+  <div class="card reveal" id="techInterviewCard" role="button" tabindex="0">
+    <i class="fa-solid fa-code"></i>
+    <span>Technical Interview</span>
+    <small>Role-based questions</small>
+  </div>
+
+  <a href="hr-interview.html" class="card reveal">
+    <i class="fa-solid fa-user-tie"></i>
+    <span>HR / Behavioral</span>
+    <small>Personality & culture fit</small>
+  </a>
+
+  <a href="communication-practice.html" class="card reveal">
+    <i class="fa-solid fa-comments"></i>
+    <span>Communication Practice</span>
+    <small>Fluency & confidence</small>
+  </a>
+
+  <a href="interview-history.html" class="card reveal">
+    <i class="fa-solid fa-clock-rotate-left"></i>
+    <span>Interview History</span>
+    <small>Past attempts & scores</small>
+  </a>
+
+</section>
+
+<footer>
+  © 2026 SmartHire • Interview Center
+</footer>
+
+<!-- ===============================
+     LANGUAGE SELECTION MODAL
+================================= -->
+<div id="languageModal"
+     aria-hidden="true"
+     style="
+      position:fixed;
+      inset:0;
+      background:rgba(0,0,0,0.6);
+      display:none;
+      align-items:center;
+      justify-content:center;
+      z-index:1000;
+">
+
+  <div
+    onclick="event.stopPropagation()"
+    style="
+      background:var(--glass);
+      backdrop-filter:blur(14px);
+      border-radius:18px;
+      padding:28px;
+      width:90%;
+      max-width:420px;
+      text-align:center;
+    "
+  >
+    <h3 style="margin-bottom:10px;">Select Coding Language</h3>
+
+    <p style="font-size:13px; opacity:0.8; margin-bottom:18px;">
+      Choose the language for your technical interview
+    </p>
+
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+      <button class="btn" onclick="startInterview('c')">C</button>
+      <button class="btn" onclick="startInterview('python')">Python</button>
+      <button class="btn" onclick="startInterview('java')">Java</button>
+      <button class="btn" onclick="startInterview('javascript')">JavaScript</button>
+    </div>
+
+    <button
+      style="
+        margin-top:16px;
+        background:none;
+        border:none;
+        color:var(--text);
+        opacity:0.7;
+        cursor:pointer;
+      "
+      onclick="closeLanguageModal()"
+    >
+      Cancel
+    </button>
+  </div>
+</div>
+
+<!-- Scripts -->
+<script src="js/ui.js"></script>
+<script src="js/auth-guard.js"></script>
+
+<script>
+const techCard = document.getElementById("techInterviewCard");
+const modal = document.getElementById("languageModal");
+
+function openLanguageModal() {
+  modal.style.display = "flex";
+  modal.setAttribute("aria-hidden", "false");
+  document.body.style.overflow = "hidden";
+}
+
+function closeLanguageModal() {
+  modal.style.display = "none";
+  modal.setAttribute("aria-hidden", "true");
+  document.body.style.overflow = "";
+}
+
+function startInterview(lang) {
+  window.location.href = `technical-interview.html?lang=${lang}`;
+}
+
+techCard?.addEventListener("click", openLanguageModal);
+modal?.addEventListener("click", closeLanguageModal);
+</script>
+
+</body>
+</html>

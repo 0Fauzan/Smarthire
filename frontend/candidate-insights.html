@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>SmartHire | Interview Insights</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Montserrat:wght@600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+  <!-- Main CSS -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+<!-- Background -->
+<div class="bg-effects">
+  <span></span><span></span><span></span>
+</div>
+
+<!-- Navbar -->
+<nav class="navbar">
+  <div class="logo">SmartHire</div>
+  <div class="nav-actions">
+    <a href="candidate-dashboard.html" class="nav-link">Dashboard</a>
+  </div>
+</nav>
+
+<!-- Hero -->
+<section class="hero dashboard">
+  <h1>Interview Insights</h1>
+  <p>Your AI-powered interview performance analysis</p>
+</section>
+
+<!-- INSIGHTS GRID -->
+<section class="features">
+
+  <!-- SUMMARY -->
+  <div class="card show">
+    <i class="fa-solid fa-clipboard-list"></i>
+    <span>Interview Summary</span>
+    <small id="summaryText">
+      Loading summary…
+    </small>
+  </div>
+
+  <!-- PERFORMANCE -->
+  <div class="card show">
+    <i class="fa-solid fa-check-circle"></i>
+    <span>Question Accuracy</span>
+    <small id="accuracyStats">
+      Calculating performance…
+    </small>
+
+    <div id="accuracyList" style="margin-top:10px;font-size:13px;"></div>
+  </div>
+
+  <!-- AI FEEDBACK -->
+  <div class="card show">
+    <i class="fa-solid fa-robot"></i>
+    <span>AI Feedback</span>
+    <small id="aiFeedback">
+      Feedback will appear here.
+    </small>
+  </div>
+
+</section>
+
+<!-- ACTIONS -->
+<section class="features">
+
+  <button class="btn" onclick="downloadPDF()">
+    Download Interview Report (PDF)
+  </button>
+
+  <a href="interview-review.html" class="btn">
+    View Question Review
+  </a>
+
+</section>
+
+<footer>
+  © 2026 SmartHire • Interview Insights
+</footer>
+
+<!-- Scripts -->
+<script src="js/ui.js"></script>
+<script src="js/auth-guard.js"></script>
+
+<script>
+/* ===============================
+   LOAD INTERVIEW INSIGHTS
+================================ */
+
+const review = JSON.parse(localStorage.getItem("interviewReview"));
+
+const summaryText = document.getElementById("summaryText");
+const accuracyStats = document.getElementById("accuracyStats");
+const accuracyList = document.getElementById("accuracyList");
+const aiFeedback = document.getElementById("aiFeedback");
+
+if (!review) {
+  summaryText.innerText = "No interview data found.";
+} else {
+  /* SUMMARY */
+  summaryText.innerHTML = `
+    Type: ${review.meta.type}<br>
+    Language: ${review.meta.language.toUpperCase()}<br>
+    Date: ${review.meta.date}<br>
+    Questions: ${review.results.length}
+  `;
+
+  /* PERFORMANCE */
+  const correct = review.results.filter(q => q.isCorrect).length;
+  const total = review.results.length;
+  const accuracy = Math.round((correct / total) * 100);
+
+  accuracyStats.innerHTML = `
+    Accuracy: ${accuracy}%<br>
+    Correct: ${correct} / ${total}
+  `;
+
+  review.results.forEach((q, index) => {
+    const row = document.createElement("div");
+    row.style.color = q.isCorrect ? "#6fd3ff" : "#ff6b6b";
+    row.innerHTML = `Q${index + 1}: ${q.isCorrect ? "✔ Correct" : "✖ Incorrect"}`;
+    accuracyList.appendChild(row);
+  });
+
+  /* AI FEEDBACK */
+  aiFeedback.innerHTML = `
+    • Focus on weak concepts<br>
+    • Improve time management<br>
+    • Practice similar interview questions
+  `;
+}
+
+/* ===============================
+   DOWNLOAD PDF
+================================ */
+function downloadPDF() {
+  if (!review) return alert("No interview data found");
+
+  let content = `
+SMARTHIRE – INTERVIEW REPORT
+
+Type: ${review.meta.type}
+Language: ${review.meta.language}
+Date: ${review.meta.date}
+
+----------------------------------
+`;
+
+  review.results.forEach((q, i) => {
+    content += `
+Q${i + 1}: ${q.question}
+Your Answer: ${q.user}
+Correct Answer: ${q.correct}
+Result: ${q.isCorrect ? "Correct" : "Incorrect"}
+Time Taken: ${q.timeTaken}s
+
+`;
+  });
+
+  const blob = new Blob([content], { type: "application/pdf" });
+  const link = document.createElement("a");
+  link.href = URL.createObjectURL(blob);
+  link.download = "SmartHire_Interview_Report.pdf";
+  link.click();
+}
+</script>
+
+
+</body>
+</html>

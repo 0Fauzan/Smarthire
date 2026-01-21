@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>SmartHire | Candidate Profile</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Montserrat:wght@600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+  <!-- Main CSS -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+  <!-- Background -->
+  <div class="bg-effects">
+    <span></span><span></span><span></span>
+  </div>
+
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="logo">SmartHire</div>
+
+    <div class="nav-actions">
+      <button id="themeToggle" class="theme-btn">
+        <i class="fa-solid fa-moon"></i>
+      </button>
+
+      <div class="profile-menu">
+        <i class="fa-solid fa-user"></i>
+        <div class="profile-dropdown">
+          <a href="candidate-dashboard.html">Dashboard</a>
+          <a href="profile.html">Profile</a>
+          <a href="login.html">Logout</a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="hero dashboard">
+    <h1>Candidate Profile</h1>
+    <p>Complete your profile to unlock AI features</p>
+  </section>
+
+  <!-- Profile Content -->
+  <section class="features resume-grid">
+
+    <!-- Profile Completion -->
+    <div class="card reveal">
+      <i class="fa-solid fa-chart-pie"></i>
+      <span>Profile Completion</span>
+      <small>65% completed</small>
+    </div>
+
+    <!-- BASIC INFO -->
+    <div class="card reveal">
+      <i class="fa-solid fa-id-card"></i>
+      <span>Basic Information</span>
+      <small>Name, contact & links</small>
+    </div>
+
+    <!-- EDUCATION -->
+    <div class="card reveal">
+      <i class="fa-solid fa-graduation-cap"></i>
+      <span>Education</span>
+      <small>Degree & institution</small>
+    </div>
+
+    <!-- SKILLS -->
+    <div class="card reveal">
+      <i class="fa-solid fa-code"></i>
+      <span>Skills</span>
+      <small>Technical & tools</small>
+    </div>
+
+    <!-- PROJECTS -->
+    <div class="card reveal">
+      <i class="fa-solid fa-diagram-project"></i>
+      <span>Projects / Experience</span>
+      <small>Work & projects</small>
+    </div>
+
+    <!-- AI INTERVIEW LOCK -->
+    <div class="card reveal">
+      <i class="fa-solid fa-robot"></i>
+      <span>AI Interview</span>
+      <small>Complete profile to unlock</small>
+    </div>
+
+  </section>
+
+  <footer>
+    © 2026 SmartHire • Candidate Profile
+  </footer>
+
+  <!-- Scripts -->
+  <script src="js/ui.js"></script>
+  <script src="js/auth-guard.js"></script>
+
+</body>
+</html>

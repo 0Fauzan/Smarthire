@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>SmartHire | Resume Center</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Montserrat:wght@600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+  <!-- Main CSS -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+  <!-- Background -->
+  <div class="bg-effects">
+    <span></span><span></span><span></span>
+  </div>
+
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="logo">SmartHire</div>
+
+    <div class="nav-actions">
+      <button id="themeToggle" class="theme-btn">
+        <i class="fa-solid fa-moon"></i>
+      </button>
+
+      <div class="profile-menu">
+        <i class="fa-solid fa-user"></i>
+        <div class="profile-dropdown">
+          <a href="candidate-dashboard.html">Dashboard</a>
+          <a href="profile.html">Profile</a>
+          <a href="login.html">Logout</a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="hero dashboard">
+    <h1>Resume Center</h1>
+    <p>Upload, analyze and improve your resume with AI</p>
+  </section>
+
+  <!-- Resume Features -->
+  <section class="features resume-grid">
+
+    <!-- Upload Resume -->
+    <div class="card reveal" id="resumeCard">
+      <i class="fa-solid fa-file-arrow-up"></i>
+      <span>Upload Resume</span>
+      <small id="resumeStatus">PDF / DOCX</small>
+      <input type="file" id="resumeInput" hidden>
+    </div>
+<!-- ATS SCORE CARD -->
+<div class="card ats-card reveal" id="atsCard" tabindex="0">
+
+  <!-- COLLAPSED VIEW -->
+  <div class="ats-collapsed">
+    <i class="fa-solid fa-gauge-high ats-icon"></i>
+    <span>ATS Score</span>
+    <small class="ats-mini-score">
+      <span id="atsMiniValue">--</span>/100
+    </small>
+  </div>
+
+  <!-- EXPANDED VIEW -->
+  <div class="ats-expanded">
+
+    <div class="score-circle">
+      <span id="atsValue">--</span>
+      <small>/100</small>
+    </div>
+
+    <p class="ats-status" id="atsStatus">—</p>
+
+    <div class="ats-breakdown">
+      <p>Keywords Match <b id="kwScore">--%</b></p>
+      <p>Formatting <b id="fmtScore">--%</b></p>
+      <p>Sections <b id="secScore">--%</b></p>
+    </div>
+
+    <button class="ats-improve-btn" id="improveResumeBtn">
+    Improve Resume
+    </button>
+
+  </div>
+</div>
+    <!-- AI Feedback -->
+    <a href="candidate-insights.html" class="card reveal">
+    <i class="fa-solid fa-lightbulb"></i>
+    <span>AI Suggestions</span>
+    <small>Content improvements</small>
+  </a>
+
+    <!-- Resume Builder -->
+    <a href="candidate-resume-builder.html" class="card reveal">
+  <i class="fa-solid fa-wand-magic-sparkles"></i>
+  <span>AI Resume Builder</span>
+  <small>Create ATS-friendly resume</small>
+</a>
+
+  </section>
+
+  <footer>
+    © 2026 SmartHire • Resume Center
+  </footer>
+
+  <!-- Scripts -->
+  <script src="js/ui.js"></script>
+  <script src="js/candidate.js"></script>
+  <script src="js/auth-guard.js"></script>
+  <script>
+  // Navigate to Resume Builder / Improvement page
+  document.getElementById("improveResumeBtn")?.addEventListener("click", () => {
+    window.location.href = "candidate-resume-builder.html";
+  });
+  </script>
+
+</body>
+</html>

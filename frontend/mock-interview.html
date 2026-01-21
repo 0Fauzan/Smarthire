@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>SmartHire | AI Mock Interview</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Montserrat:wght@600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+  <!-- Main CSS -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+  <!-- Background -->
+  <div class="bg-effects">
+    <span></span><span></span><span></span>
+  </div>
+
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="logo">SmartHire</div>
+
+    <div class="nav-actions">
+      <a href="candidate-interview.html" class="nav-link">Back</a>
+      <button id="themeToggle" class="theme-btn">
+        <i class="fa-solid fa-moon"></i>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Interview Header -->
+  <section class="hero dashboard">
+    <h1>AI Mock Interview</h1>
+    <p>Answer questions as you would in a real interview</p>
+  </section>
+
+  <!-- Interview Panel -->
+  <section class="features">
+
+    <!-- Instructions -->
+    <div class="card show">
+      <i class="fa-solid fa-circle-info"></i>
+      <span>Instructions</span>
+      <small>
+        Answer clearly. Timer starts once interview begins.
+      </small>
+    </div>
+
+    <!-- Question -->
+    <div class="card show">
+  <i class="fa-solid fa-question"></i>
+  <span>
+    Question <small id="qCounter">(1 / 5)</small>
+  </span>
+  <small id="questionText">
+    Tell me about yourself.
+  </small>
+</div>
+
+    <!-- Answer Box -->
+    <div class="card show">
+      <i class="fa-solid fa-pen"></i>
+      <span>Your Answer</span>
+      <textarea
+        style="
+          width: 100%;
+          height: 80px;
+          margin-top: 10px;
+          border-radius: 10px;
+          padding: 10px;
+          border: none;
+          font-size: 14px;
+          resize: none;
+        "
+        placeholder="Type your answer here..."
+      ></textarea>
+    </div>
+
+    <!-- Controls -->
+    <div class="card show">
+  <i class="fa-solid fa-clock"></i>
+  <span>Timer</span>
+  <small id="timer">02:00</small>
+
+  <button class="btn" id="nextBtn" style="margin-top:10px;">
+    Next Question
+  </button>
+</div>
+  </section>
+
+  <footer>
+    © 2026 SmartHire • AI Mock Interview
+  </footer>
+
+  <!-- Scripts -->
+  <script src="js/ui.js"></script>
+  <script src="js/auth-guard.js"></script>
+  <script src="js/mock-interview.js"></script>
+
+</body>
+</html>

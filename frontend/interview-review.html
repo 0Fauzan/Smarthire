@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Interview Review</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+<section class="hero dashboard">
+  <h1>Question Review</h1>
+  <p>Your answer vs AI recommended answer</p>
+</section>
+
+<section class="features" id="reviewContainer"></section>
+
+<script>
+const data = JSON.parse(localStorage.getItem("interviewReview"));
+const container = document.getElementById("reviewContainer");
+
+const aiAnswers = {
+  "What is the time complexity of binary search?":
+    "Binary search divides the search space in half each time, resulting in O(log n) complexity.",
+  "Which data structure follows FIFO?":
+    "A queue follows First In First Out (FIFO), meaning the first inserted element is removed first.",
+  "What does SQL stand for?":
+    "SQL stands for Structured Query Language and is used for managing relational databases."
+};
+
+if (data && data.results) {
+  data.results.forEach((q, i) => {
+    const card = document.createElement("div");
+    card.className = "card show";
+
+    card.innerHTML = `
+      <strong>Q${i + 1}: ${q.question}</strong>
+      <small><b>Your Answer:</b> ${q.user}</small>
+      <small><b>Correct Answer:</b> ${q.correct}</small>
+      <small><b>AI Explanation:</b> ${aiAnswers[q.question] || "AI explanation coming soon"}</small>
+    `;
+
+    container.appendChild(card);
+  });
+}
+</script>
+
+</body>
+</html>

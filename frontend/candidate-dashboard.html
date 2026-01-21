@@ -1,0 +1,105 @@
+  <!DOCTYPE html>
+  <html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>SmartHire | Candidate Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Montserrat:wght@600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="css/style.css">
+  </head>
+
+  <body>
+
+    <!-- Background -->
+    <div class="bg-effects">
+      <span></span><span></span><span></span>
+    </div>
+
+    <!-- NAVBAR -->
+    <nav class="navbar">
+      <div class="logo">SmartHire</div>
+
+      <div class="nav-actions">
+        <button id="themeToggle" class="theme-btn">
+          <i class="fa-solid fa-moon"></i>
+        </button>
+
+        <!-- Profile Menu -->
+        <div class="profile-menu">
+          <i class="fa-solid fa-user-circle"></i>
+          <div class="profile-dropdown">
+            <a href="candidate-profile.html">Profile</a>
+            <a href="#">Settings</a>
+            <a href="login.html" id="logoutBtn">Logout</a>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <!-- PAGE HEADER -->
+    <section class="hero">
+      <h1>Candidate Dashboard</h1>
+      <p>Manage your resume, interviews & AI insights</p>
+    </section>
+
+    <!-- DASHBOARD MENU OPTIONS -->
+<section class="features">
+
+  <!-- Resume Module -->
+  <a href="candidate-resume.html" class="card reveal">
+    <i class="fa-solid fa-file-lines"></i>
+    <span>Resume</span>
+    <small>Upload • Analyze • ATS Score</small>
+  </a>
+
+  <!-- AI Interview (Question + Text Answers) -->
+  <a href="candidate-interview.html" class="card reveal">
+    <i class="fa-solid fa-headset"></i>
+    <span>AI Interview</span>
+    <small>Answer AI Questions</small>
+  </a>
+
+  <!-- Video Interview -->
+  <a href="candidate-video-interview.html" class="card reveal">
+    <i class="fa-solid fa-video"></i>
+    <span>Video Interview</span>
+    <small>Record & Evaluate</small>
+  </a>
+
+  <!-- Insights -->
+  <a href="candidate-insights.html" class="card reveal">
+    <i class="fa-solid fa-chart-line"></i>
+    <span>Insights</span>
+    <small>Performance & Feedback</small>
+  </a>
+
+  <!-- AI Resume Builder -->
+  <a href="candidate-resume-builder.html" class="card reveal">
+    <i class="fa-solid fa-wand-magic-sparkles"></i>
+    <span>AI Resume Builder</span>
+    <small>Create ATS-friendly resume</small>
+  </a>
+
+</section>
+
+
+    <!-- Footer -->
+    <footer>
+      © 2026 SmartHire • Candidate Dashboard
+    </footer>
+
+    <!-- Scripts -->
+    <script src="js/ui.js"></script>
+    <script src="js/auth-guard.js"></script>
+
+  </body>
+  </html>

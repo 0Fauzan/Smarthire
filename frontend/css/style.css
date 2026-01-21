@@ -1,0 +1,841 @@
+/* ===============================
+   THEME VARIABLES
+================================*/
+:root {
+  --bg1: #0f2027;
+  --bg2: #203a43;
+  --bg3: #2c5364;
+
+  --text: #ffffff;
+  --glass: rgba(255, 255, 255, 0.12);
+  --border: rgba(255, 255, 255, 0.25);
+}
+
+/* LIGHT THEME VARIABLES */
+body.light {
+  --bg1: #f8fbfd;
+  --bg2: #eef3f7;
+  --bg3: #dde6ee;
+
+  --text: #111111;
+  --glass: rgba(255, 255, 255, 0.75);
+  --border: rgba(0, 0, 0, 0.1);
+}
+
+/* ===============================
+   RESET
+================================*/
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Inter", sans-serif;
+}
+
+body {
+  min-height: 100vh;
+  background: linear-gradient(120deg, var(--bg1), var(--bg2), var(--bg3));
+  color: var(--text);
+  overflow-x: hidden;
+  transition: background 0.4s ease, color 0.4s ease;
+}
+
+/* ===============================
+   BACKGROUND EFFECTS
+================================*/
+.bg-effects span {
+  position: fixed;
+  width: 260px;
+  height: 260px;
+  background: radial-gradient(circle, rgba(255,255,255,0.18), transparent);
+  border-radius: 50%;
+  animation: float 18s infinite alternate ease-in-out;
+  z-index: -1;
+}
+
+.bg-effects span:nth-child(1) {
+  top: 10%;
+  left: -80px;
+}
+
+.bg-effects span:nth-child(2) {
+  bottom: 20%;
+  right: -100px;
+  animation-delay: 5s;
+}
+
+.bg-effects span:nth-child(3) {
+  top: 55%;
+  right: 25%;
+  animation-delay: 9s;
+}
+
+@keyframes float {
+  from { transform: translateY(0); }
+  to { transform: translateY(-70px); }
+}
+
+/* ===============================
+   LIGHT THEME BACKGROUND
+================================*/
+body.light {
+  background:
+    radial-gradient(circle at 20% 20%, rgba(44,83,100,0.12), transparent 40%),
+    radial-gradient(circle at 80% 30%, rgba(32,58,67,0.12), transparent 45%),
+    linear-gradient(180deg, #f8fbfd, #eef3f7);
+}
+
+body.light .bg-effects span {
+  background: radial-gradient(circle, rgba(44,83,100,0.18), transparent);
+}
+
+/* ===============================
+   NAVBAR
+================================*/
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 18px 24px;
+}
+
+.logo {
+  font-family: "Montserrat", sans-serif;
+  font-size: 22px;
+  font-weight: 800;
+}
+
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* LOGIN / SIGNUP LINK */
+.nav-link {
+  padding: 8px 14px;
+  border-radius: 10px;
+  font-weight: 600;
+  text-decoration: none;
+  color: var(--text);
+  border: 1.5px solid var(--border);
+  transition: all 0.25s ease;
+  font-size: 13px;
+}
+
+.nav-link:hover {
+  background: var(--glass);
+}
+
+/* PRIMARY CTA */
+.btn {
+  background: #ffffff;
+  color: #203a43;
+  padding: 8px 16px;
+  border-radius: 12px;
+  font-weight: 700;
+  text-decoration: none;
+  font-size: 13px;
+  transition: all 0.25s ease;
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 22px rgba(0,0,0,0.25);
+}
+
+/* THEME TOGGLE */
+.theme-btn {
+  background: none;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+  color: var(--text);
+}
+
+/* ===============================
+   HERO
+================================*/
+.hero {
+  text-align: center;
+  padding: 80px 18px 50px;
+}
+
+.hero h1 {
+  font-family: "Montserrat", sans-serif;
+  font-size: 36px;
+  font-weight: 800;
+}
+
+.hero p {
+  margin-top: 16px;
+  font-size: 15px;
+  opacity: 0.9;
+}
+
+.cta {
+  display: inline-block;
+  margin-top: 28px;
+  padding: 14px 30px;
+  background: linear-gradient(135deg, #2c5364, #203a43);
+  color: #ffffff;
+  border-radius: 999px;
+  font-weight: 700;
+  text-decoration: none;
+  font-size: 14px;
+  transition: all 0.25s ease;
+}
+
+.cta:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 14px 32px rgba(32,58,67,0.4);
+}
+
+/* ===============================
+   FEATURES
+================================*/
+.features {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+  padding: 50px 20px;
+}
+
+.card {
+  background: var(--glass);
+  border: 1px solid var(--border);
+  backdrop-filter: blur(12px);
+  height: 140px;
+  border-radius: 18px;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+
+  font-weight: 600;
+  text-align: center;
+
+  opacity: 0;
+  transform: translateY(30px);
+  transition: all 0.6s ease;
+}
+
+.card.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.card i {
+  font-size: 30px;
+}
+
+.card:hover {
+  transform: translateY(-10px) scale(1.05);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.18);
+}
+
+/* ===============================
+   AUTH CARD (LOGIN / SIGNUP)
+================================*/
+.signup-card {
+  max-width: 420px;
+  margin: auto;
+  background: var(--glass);
+  border: 1px solid var(--border);
+  backdrop-filter: blur(14px);
+  padding: 32px;
+  border-radius: 22px;
+}
+
+/* Light theme border clarity */
+body.light .signup-card {
+  border: 1.5px solid rgba(0,0,0,0.15);
+  box-shadow: 0 20px 50px rgba(0,0,0,0.12);
+}
+
+.signup-card h2 {
+  font-family: "Montserrat", sans-serif;
+  text-align: center;
+  font-size: 26px;
+}
+
+.signup-card .subtitle {
+  text-align: center;
+  font-size: 14px;
+  opacity: 0.85;
+  margin: 10px 0 24px;
+}
+
+/* ===============================
+   SOCIAL LOGIN
+================================*/
+.social-auth {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.social-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+
+  padding: 12px;
+  border-radius: 999px;
+  font-size: 14px;
+  font-weight: 600;
+
+  border: 1.5px solid var(--border);
+  background: transparent;
+  color: var(--text);
+
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.social-btn i {
+  font-size: 16px;
+}
+
+/* GOOGLE – FIXED BORDER */
+.social-btn.google {
+  background: #ffffff;
+  color: #1f1f1f;
+  border: 1.8px solid rgba(0, 0, 0, 0.25);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+}
+
+.social-btn.google:hover {
+  border-color: rgba(0,0,0,0.45);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.18);
+  transform: translateY(-1px);
+}
+
+/* GITHUB */
+.social-btn.github {
+  background: #1f1f1f;
+  color: #ffffff;
+  border-color: #1f1f1f;
+}
+
+.social-btn.github:hover {
+  box-shadow: 0 10px 24px rgba(0,0,0,0.35);
+}
+
+/* DIVIDER */
+.auth-divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 18px 0;
+  font-size: 12px;
+  opacity: 0.7;
+}
+
+.auth-divider::before,
+.auth-divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+/* ===============================
+   FORM INPUTS
+================================*/
+.form-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 14px;
+}
+
+.form-group label {
+  text-align: left;
+  font-size: 13px;
+  margin-bottom: 6px;
+}
+
+.form-group input,
+.form-group select {
+  padding: 12px;
+  border-radius: 12px;
+  border: none;
+  font-size: 14px;
+  outline: none;
+}
+
+/* Light theme input borders */
+body.light .form-group input,
+body.light .form-group select {
+  border: 1.5px solid rgba(0,0,0,0.18);
+  box-shadow: inset 0 1px 2px rgba(0,0,0,0.08);
+}
+
+body.light .form-group input:focus,
+body.light .form-group select:focus {
+  border-color: #2c5364;
+  box-shadow:
+    0 0 0 3px rgba(44,83,100,0.18),
+    inset 0 1px 2px rgba(0,0,0,0.08);
+}
+
+/* ===============================
+   PRIMARY FORM BUTTON
+================================*/
+.signup-card button {
+  width: 100%;
+  margin-top: 18px;
+  padding: 14px;
+  border: none;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #2c5364, #203a43);
+  color: #ffffff;
+  font-family: "Montserrat", sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.signup-card button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 14px 32px rgba(32,58,67,0.45);
+}
+
+/* ===============================
+   FOOTER
+================================*/
+footer {
+  text-align: center;
+  padding: 24px;
+  font-size: 12px;
+  opacity: 0.7;
+}
+
+/* ===============================
+   DESKTOP BREAKPOINT
+================================*/
+@media (min-width: 900px) {
+  .navbar {
+    padding: 24px 70px;
+  }
+
+  .hero h1 {
+    font-size: 52px;
+  }
+
+  .features {
+    grid-template-columns: repeat(4, 1fr);
+    max-width: 1200px;
+    margin: auto;
+  }
+}
+
+/* ===============================
+   AUTH CONTEXT DIFFERENTIATION
+================================*/
+
+/* Icon above title */
+.auth-icon {
+  font-size: 34px;
+  margin-bottom: 10px;
+  opacity: 0.9;
+}
+
+/* Context badge */
+.auth-badge {
+  display: inline-block;
+  margin-bottom: 10px;
+  padding: 5px 12px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+/* Signup context */
+.signup-page .auth-badge {
+  background: rgba(44, 83, 100, 0.18);
+  color: #2c5364;
+}
+
+/* Login context */
+.login-page .auth-badge {
+  background: rgba(0, 0, 0, 0.2);
+  color: #ffffff;
+}
+
+/* Signup primary button */
+.signup-page .signup-card button {
+  background: linear-gradient(135deg, #2c5364, #203a43);
+}
+
+/* Login primary button */
+.login-page .signup-card button {
+  background: linear-gradient(135deg, #111111, #333333);
+}
+
+.card.reveal:not(.show) {
+  will-change: opacity, transform;
+}
+/* ===============================
+   CANDIDATE DASHBOARD – CARDS
+================================ */
+.features .card {
+  cursor: pointer;
+  height: 170px;
+  padding: 22px 18px;
+}
+
+.features .card i {
+  font-size: 34px;
+  opacity: 0.9;
+}
+
+.features .card span {
+  font-family: "Montserrat", sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.features .card small {
+  font-size: 13px;
+  opacity: 0.75;
+}
+/* Remove default link styling inside cards */
+.features a,
+.features a:visited,
+.features a:hover {
+  color: var(--text);
+  text-decoration: none;
+}
+.features .card:hover {
+  transform: translateY(-8px) scale(1.04);
+  box-shadow: 0 28px 55px rgba(0,0,0,0.35);
+  background: rgba(255, 255, 255, 0.16);
+}
+
+/* ===============================
+   DASHBOARD HERO
+================================ */
+.hero.dashboard {
+  padding-top: 90px;
+  padding-bottom: 60px;
+}
+
+.hero.dashboard h1 {
+  font-size: 52px;
+}
+
+.hero.dashboard p {
+  font-size: 15px;
+  opacity: 0.85;
+}
+/* ===============================
+   PROFILE MENU
+================================ */
+.profile-menu {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  position: relative;
+}
+
+.profile-menu i {
+  font-size: 18px;
+}
+
+.profile-dropdown {
+  position: absolute;
+  top: 120%;
+  right: 0;
+  background: rgba(20, 40, 50, 0.95);
+  backdrop-filter: blur(14px);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  display: none;
+  flex-direction: column;
+  min-width: 150px;
+  z-index: 999;
+}
+
+.profile-dropdown a {
+  padding: 10px 14px;
+  font-size: 13px;
+  color: var(--text);
+  text-decoration: none;
+  transition: background 0.25s ease;
+}
+
+.profile-dropdown a:hover {
+  background: rgba(255,255,255,0.12);
+}
+
+.profile-menu:hover .profile-dropdown {
+  display: flex;
+}
+body.light .features .card {
+  background: rgba(255,255,255,0.85);
+  border: 1.5px solid rgba(0,0,0,0.12);
+}
+
+body.light .features .card:hover {
+  background: rgba(255,255,255,0.95);
+}
+
+/* ===============================
+   RESUME PAGE GRID
+================================ */
+.resume-grid {
+  max-width: 1200px;
+  margin: auto;
+}
+
+.resume-grid .card {
+  height: 190px;
+}
+
+.resume-grid .card i {
+  font-size: 36px;
+}
+
+.resume-grid .card small {
+  font-size: 13px;
+  opacity: 0.75;
+}
+
+/* Upload card emphasis */
+#resumeCard {
+  border: 2px dashed rgba(255,255,255,0.35);
+}
+
+#resumeCard:hover {
+  border-color: #6fd3ff;
+}
+body.light #resumeCard {
+  border-color: rgba(0,0,0,0.2);
+}
+/* =====================================
+   ATS CARD – FINAL WORKING VERSION
+===================================== */
+
+/* Override normal card height ONLY for ATS */
+.ats-card {
+  position: relative;
+  height: 190px;
+  overflow: hidden;
+  cursor: pointer;
+
+  transition: transform 0.35s ease, box-shadow 0.35s ease;
+}
+
+/* Lift on hover */
+.ats-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 26px 55px rgba(0,0,0,0.35);
+}
+
+/* -------------------------------
+   COLLAPSED STATE
+-------------------------------- */
+.ats-collapsed {
+  height: 100%;
+  padding: 22px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+
+  text-align: center;
+  opacity: 1;
+
+  transition: opacity 0.3s ease;
+}
+
+.ats-collapsed h3 {
+  font-family: "Montserrat", sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.ats-mini {
+  font-size: 14px;
+  opacity: 0.8;
+}
+
+/* -------------------------------
+   EXPANDED STATE
+-------------------------------- */
+.ats-expanded {
+  position: absolute;
+  inset: 0;
+
+  padding: 22px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+
+  opacity: 0;
+  pointer-events: none;
+
+  transition: opacity 0.35s ease;
+}
+
+/* Toggle visibility */
+.ats-card:hover .ats-collapsed {
+  opacity: 0;
+}
+
+.ats-card:hover .ats-expanded {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* -------------------------------
+   SCORE CIRCLE
+-------------------------------- */
+.score-circle {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  border: 6px solid #6fd3ff;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.score-circle span {
+  font-size: 26px;
+  font-weight: 700;
+}
+
+.score-circle small {
+  font-size: 11px;
+  opacity: 0.75;
+}
+
+/* -------------------------------
+   STATUS TEXT
+-------------------------------- */
+.ats-status {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.ats-status.good {
+  color: #6fd3ff;
+}
+
+/* -------------------------------
+   BREAKDOWN
+-------------------------------- */
+.ats-breakdown {
+  width: 100%;
+  font-size: 13px;
+  margin-top: 6px;
+}
+
+.ats-breakdown p {
+  display: flex;
+  justify-content: space-between;
+  margin: 4px 0;
+}
+
+/* -------------------------------
+   BUTTON
+-------------------------------- */
+.ats-improve-btn {
+  margin-top: auto;
+  padding: 8px 18px;
+
+  border-radius: 999px;
+  border: none;
+
+  font-size: 12px;
+  font-weight: 600;
+
+  background: linear-gradient(135deg, #6fd3ff, #2c5364);
+  color: #0f2027;
+
+  cursor: pointer;
+}
+
+.ats-improve-btn:hover {
+  transform: translateY(-2px);
+}
+/* =========================================
+   TECHNICAL INTERVIEW – FINAL LAYOUT FIX
+========================================= */
+
+.technical-page .features {
+  display: flex;
+  justify-content: center;
+}
+
+/* Main interview card */
+.technical-page #questionCard {
+  width: 100%;
+  max-width: 1000px;     /* ⬅ wider for large screens */
+  padding: 32px 40px;
+  height: auto;          /* ⬅ stop vertical stretching */
+  text-align: left;      /* ⬅ IMPORTANT */
+}
+
+/* Question text */
+.technical-page #questionText {
+  font-size: 22px;
+  font-weight: 600;
+  line-height: 1.6;
+  margin-bottom: 28px;
+}
+
+/* Options layout */
+.technical-page .options {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(220px, 1fr));
+  gap: 16px 20px;
+  margin-bottom: 32px;
+}
+
+/* Option labels */
+.technical-page .options label {
+  background: rgba(255,255,255,0.15);
+  padding: 14px 16px;
+  border-radius: 12px;
+  cursor: pointer;
+  font-size: 15px;
+  text-align: left;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Button alignment */
+.technical-page #nextBtn {
+  margin-left: auto;     /* ⬅ bottom-right like real tests */
+  display: block;
+}
+
+/* Mobile fix */
+@media (max-width: 700px) {
+  .technical-page #questionCard {
+    padding: 24px;
+  }
+
+  .technical-page .options {
+    grid-template-columns: 1fr;
+  }
+}

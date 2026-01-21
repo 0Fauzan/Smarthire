@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>SmartHire | Edit Profile</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Montserrat:wght@600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+  <!-- Main CSS -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+  <!-- Background -->
+  <div class="bg-effects">
+    <span></span><span></span><span></span>
+  </div>
+
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="logo">SmartHire</div>
+    <div class="nav-actions">
+      <button id="themeToggle" class="theme-btn">
+        <i class="fa-solid fa-moon"></i>
+      </button>
+      <a href="profile.html" class="nav-link">Back</a>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="hero dashboard">
+    <h1>Edit Profile</h1>
+    <p>This information powers your resume & AI interview</p>
+  </section>
+
+  <!-- FORM -->
+  <section class="features">
+
+    <div class="signup-card">
+
+      <form id="profileForm">
+
+        <div class="form-group">
+          <label>Full Name</label>
+          <input type="text" id="fullName" placeholder="Your name">
+        </div>
+
+        <div class="form-group">
+          <label>Current Role / Title</label>
+          <input type="text" id="role" placeholder="B.Tech CSE Student">
+        </div>
+
+        <div class="form-group">
+          <label>Education</label>
+          <input type="text" id="education" placeholder="B.Tech – Computer Science">
+        </div>
+
+        <div class="form-group">
+          <label>Skills (comma separated)</label>
+          <input type="text" id="skills" placeholder="Python, C, Linux, Git">
+        </div>
+
+        <div class="form-group">
+          <label>Projects / Experience</label>
+          <input type="text" id="projects" placeholder="SmartHire, Portfolio Website">
+        </div>
+
+        <button type="submit">Save Profile</button>
+
+      </form>
+
+      <p id="saveStatus" class="status"></p>
+
+    </div>
+
+  </section>
+
+  <footer>
+    © 2026 SmartHire • Profile Editor
+  </footer>
+
+  <!-- Scripts -->
+  <script src="js/ui.js"></script>
+  <script src="js/auth-guard.js"></script>
+  <script src="js/profile.js"></script>
+
+</body>
+</html>

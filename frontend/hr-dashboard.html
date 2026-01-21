@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>SmartHire | HR Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Montserrat:wght@600;700&display=swap"
+    rel="stylesheet"
+  />
+
+  <!-- Basic styling (temporary dashboard UI) -->
+  <style>
+    body {
+      font-family: "Inter", sans-serif;
+      background: #0f2027;
+      color: #ffffff;
+      margin: 0;
+      padding: 40px;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: auto;
+    }
+
+    h1 {
+      font-family: "Montserrat", sans-serif;
+      font-size: 32px;
+      margin-bottom: 10px;
+    }
+
+    .card {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 24px;
+      border-radius: 14px;
+      margin-top: 24px;
+    }
+
+    .logout {
+      margin-top: 30px;
+      padding: 10px 18px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h1>HR Dashboard</h1>
+    <p id="welcome">Loading...</p>
+
+    <div class="card">
+      <h3>Upcoming Features</h3>
+      <ul>
+        <li>View candidates</li>
+        <li>AI interview scores</li>
+        <li>Shortlisting & ranking</li>
+        <li>Interview recommendations</li>
+      </ul>
+    </div>
+
+    <button class="logout" onclick="logout()">Logout</button>
+  </div>
+
+  <script>
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      window.location.href = "login.html";
+    }
+
+    fetch("http://127.0.0.1:5000/hr/dashboard", {
+      headers: {
+        "Authorization": `Bearer ${token}`
+      }
+    })
+      .then(res => {
+        if (!res.ok) throw new Error("Unauthorized");
+        return res.json();
+      })
+      .then(data => {
+        document.getElementById("welcome").innerText =
+          `Welcome, ${data.user.email} (HR)`;
+      })
+      .catch(() => {
+        alert("Session expired or unauthorized access");
+        localStorage.clear();
+        window.location.href = "login.html";
+      });
+
+    function logout() {
+      localStorage.clear();
+      window.location.href = "login.html";
+    }
+  <script src="js/auth-guard.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/candidate.js"></script>
+
+</body>
+</html>

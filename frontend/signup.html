@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>SmartHire | Create Account</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Montserrat:wght@600;700;800&display=swap"
+    rel="stylesheet"
+  >
+
+  <!-- Font Awesome -->
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+  >
+
+  <!-- Main CSS -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+  <!-- Background Effects -->
+  <div class="bg-effects">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="logo">SmartHire</div>
+    <div class="nav-actions">
+      <button id="themeToggle" class="theme-btn" aria-label="Toggle theme">
+        <i class="fa-solid fa-moon"></i>
+      </button>
+      <a href="login.html" class="nav-link">Login</a>
+    </div>
+  </nav>
+
+  <!-- Signup Section -->
+  <section class="hero">
+    <div class="signup-card signup-page">
+
+      <div class="auth-icon">👤</div>
+      <span class="auth-badge">NEW USER</span>
+
+      <h2>Create Account</h2>
+      <p class="subtitle">
+        Join SmartHire and start your AI-powered journey
+      </p>
+
+      <!-- Social Login -->
+      <div class="social-auth">
+        <button type="button" class="social-btn google">
+          <i class="fa-brands fa-google"></i>
+          Continue with Google
+        </button>
+
+        <button type="button" class="social-btn github">
+          <i class="fa-brands fa-github"></i>
+          Continue with GitHub
+        </button>
+      </div>
+
+      <div class="auth-divider">or continue with email</div>
+
+      <!-- Signup Form -->
+      <form id="signupForm">
+
+        <div class="form-group">
+          <label>Full Name</label>
+          <input id="fullName" type="text" placeholder="Your full name" required>
+        </div>
+
+        <div class="form-group">
+          <label>Email</label>
+          <input id="email" type="email" placeholder="you@example.com" required>
+        </div>
+
+        <div class="form-group">
+          <label>Password</label>
+          <input id="password" type="password" placeholder="••••••••" required>
+        </div>
+
+        <div class="form-group">
+          <label>Role</label>
+          <select id="role" required>
+            <option value="">Select role</option>
+            <option value="candidate">Candidate</option>
+            <option value="hr">HR / Recruiter</option>
+          </select>
+        </div>
+
+        <button type="submit">Create Account</button>
+      </form>
+
+      <p id="signupStatus" class="status"></p>
+
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    © 2026 SmartHire • AI Recruitment And Coaching System
+  </footer>
+
+  <!-- Scripts (ORDER MATTERS) -->
+  <script src="js/ui.js"></script>
+  <script src="js/auth.js"></script>
+
+</body>
+</html>

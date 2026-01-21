@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>SmartHire | Technical Interview Result</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Fonts & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+<!-- Background -->
+<div class="bg-effects">
+  <span></span><span></span><span></span>
+</div>
+
+<!-- Navbar -->
+<nav class="navbar">
+  <div class="logo">SmartHire</div>
+  <div class="nav-actions">
+    <a href="candidate-dashboard.html" class="nav-link">Dashboard</a>
+  </div>
+</nav>
+
+<!-- Hero -->
+<section class="hero dashboard">
+  <h1>Technical Interview Result</h1>
+  <p>Your performance summary</p>
+</section>
+
+<!-- RESULT CARDS -->
+<section class="features">
+
+  <div class="card show">
+    <i class="fa-solid fa-star"></i>
+    <span>Overall Score</span>
+    <h2 id="scoreText">--%</h2>
+  </div>
+
+  <div class="card show">
+    <i class="fa-solid fa-check"></i>
+    <span>Correct Answers</span>
+    <h2 id="correctText">--</h2>
+  </div>
+
+  <div class="card show">
+    <i class="fa-solid fa-xmark"></i>
+    <span>Wrong Answers</span>
+    <h2 id="wrongText">--</h2>
+  </div>
+
+  <div class="card show">
+    <i class="fa-solid fa-clock"></i>
+    <span>Time Taken</span>
+    <h2 id="timeText">--</h2>
+  </div>
+
+</section>
+
+<!-- ACTIONS -->
+<section class="features">
+  <a href="technical-interview.html" class="card reveal">
+    <i class="fa-solid fa-rotate"></i>
+    <span>Retry Interview</span>
+    <small>Improve your score</small>
+  </a>
+
+  <a href="candidate-interview.html" class="card reveal">
+    <i class="fa-solid fa-arrow-left"></i>
+    <span>Back to Interview Center</span>
+  </a>
+</section>
+
+<footer>
+  © 2026 SmartHire • Interview Results
+</footer>
+
+<script src="js/technical-result.js"></script>
+</body>
+</html>
