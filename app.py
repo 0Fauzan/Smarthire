@@ -34,7 +34,9 @@ def create_app():
     from routes.hr import hr_bp
     from routes.admin import admin_bp
     from routes.resume_parser import resume_bp
-    from routes.ats_analyzer import ats_bp
+    from routes.ats_analyzer import ats_bp# In app.py, add:
+    from routes.interview import interview_bp
+    
 
     app.register_blueprint(auth_bp, url_prefix="/auth")
     app.register_blueprint(candidate_bp, url_prefix="/candidate")
@@ -42,6 +44,7 @@ def create_app():
     app.register_blueprint(admin_bp, url_prefix="/admin")
     app.register_blueprint(resume_bp, url_prefix="/resume")
     app.register_blueprint(ats_bp, url_prefix="/ats")
+    app.register_blueprint(interview_bp, url_prefix="/interview")
 
 
     # -------------------------------
