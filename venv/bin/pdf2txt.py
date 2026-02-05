@@ -1,4 +1,4 @@
-#!/home/dustibun/smarthire/venv/bin/python3
+#!/home/dustibun/Smarthire/venv/bin/python3
 """A command line tool for extracting text and images from PDF and
 output it to plain text, html, xml or tags.
 """

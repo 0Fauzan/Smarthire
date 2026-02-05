@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>SmartHire | Resume Builder</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+  <div class="bg-effects"><span></span><span></span><span></span></div>
+
+  <nav class="navbar">
+    <div class="logo">SmartHire</div>
+    <div class="nav-actions">
+      <a href="candidate-resume.html" class="nav-link">Back</a>
+    </div>
+  </nav>
+
+  <section class="hero dashboard">
+    <h1>AI Resume Builder</h1>
+    <p>Choose a template or start from scratch. Our builder ensures 90%+ ATS compliance.</p>
+  </section>
+
+  <main class="features" style="max-width: 1000px;">
+    <!-- 1. Start from Scratch -->
+    <div class="card reveal" onclick="window.location.href='candidate-resume-builder.html'">
+        <i class="fa-solid fa-file-circle-plus"></i>
+        <span>Start New Resume</span>
+        <small>Build a new resume from the ground up.</small>
+    </div>
+
+    <!-- 2. Use Template -->
+    <div class="card reveal" onclick="alert('Template library coming soon!')">
+        <i class="fa-solid fa-layer-group"></i>
+        <span>Template Library</span>
+        <small>Browse industry-specific, ATS-friendly templates.</small>
+    </div>
+
+    <!-- 3. Existing Profile -->
+    <div class="card reveal" onclick="window.location.href='candidate-resume-builder.html'">
+        <i class="fa-solid fa-user-pen"></i>
+        <span>Use Profile Data</span>
+        <small>Auto-fill data from your profile and edit.</small>
+    </div>
+  </main>
+
+  <footer>© 2026 SmartHire • Resume Builder</footer>
+</body>
+</html>

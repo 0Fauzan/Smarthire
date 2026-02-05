@@ -94,30 +94,25 @@ document.addEventListener("DOMContentLoaded", () => {
           return;
         }
 
-        // ✅ STORE TOKEN & ROLE (MATCHES AUTH-GUARD)
-        // LOGIN SUCCESS — DO NOT CHANGE ORDER
-        localStorage.setItem("smarthire_token", "dev-session-token");
+        // ✅ STORE REAL JWT TOKEN & ROLE
+        // Key names stay the same so auth-guard keeps working
+        localStorage.setItem("smarthire_token", data.access_token);
         localStorage.setItem("userRole", data.user.role);
         localStorage.setItem("isLoggedIn", "true");
         localStorage.setItem("user", JSON.stringify(data.user));
 
         console.log("LOGIN STORAGE SET", {
-        token: localStorage.getItem("smarthire_token"),
-        role: localStorage.getItem("userRole")
-});
+          token: localStorage.getItem("smarthire_token"),
+          role: localStorage.getItem("userRole")
+        });
 
-  if (data.user.role === "candidate") {
-    localStorage.setItem("isLoggedIn", "true");
-    localStorage.setItem("userRole", "candidate");
-    window.location.assign("candidate-dashboard.html");
-  }else if (data.user.role === "hr") {
-    localStorage.setItem("isLoggedIn", "true");
-    localStorage.setItem("userRole", "hr");
-     window.location.assign("hr-dashboard.html");
-}
- else {
-        alert("Unknown user role"); 
-      }
+        if (data.user.role === "candidate") {
+          window.location.assign("candidate-dashboard.html");
+        } else if (data.user.role === "hr") {
+          window.location.assign("hr-dashboard.html");
+        } else {
+          alert("Unknown user role");
+        }
 
       } catch (err) {
         console.error(err);
@@ -125,5 +120,15 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
   }
+
+  // Add this to your auth logic
+const logoutBtn = document.getElementById("logoutBtn");
+if (logoutBtn) {
+  logoutBtn.addEventListener("click", (e) => {
+    e.preventDefault();
+    localStorage.clear(); // Clears token, role, and login status
+    window.location.replace("login.html");
+  });
+}
 
 });

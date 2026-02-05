@@ -1,4 +1,4 @@
-#!/home/dustibun/smarthire/venv/bin/python3
+#!/home/dustibun/Smarthire/venv/bin/python3
 """Extract pdf structure in XML format"""
 
 import logging

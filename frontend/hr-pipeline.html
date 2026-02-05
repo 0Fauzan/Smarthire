@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>SmartHire | Candidate Pipeline</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="css/style.css">
+  <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+  <style>
+    /* SIDEBAR LAYOUT */
+    body { display: flex; height: 100vh; background: #0b141a; color: white; overflow: hidden; }
+    .sidebar { width: 280px; background: #0f172a; border-right: 1px solid rgba(255,255,255,0.1); padding: 30px; display: flex; flex-direction: column; }
+    .content { flex: 1; padding: 40px; overflow-y: auto; }
+    
+    /* NAV ITEMS */
+    .nav-item { padding: 15px; border-radius: 12px; color: rgba(255,255,255,0.6); display: flex; align-items: center; gap: 15px; cursor: pointer; text-decoration: none; margin-bottom: 5px; transition: 0.3s; }
+    .nav-item:hover, .nav-item.active { background: rgba(111,211,255,0.1); color: #6fd3ff; }
+
+    /* TABLE */
+    .table-container { background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; overflow: hidden; }
+    table { width: 100%; border-collapse: collapse; }
+    th { text-align: left; padding: 20px; background: rgba(255,255,255,0.05); font-size: 11px; text-transform: uppercase; color: #6fd3ff; }
+    td { padding: 18px 20px; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 14px; }
+    
+    /* REAL-TIME NOTIFICATION */
+    #live-alert { position: fixed; top: 20px; right: 20px; background: #6fd3ff; color: #000; padding: 15px 25px; border-radius: 12px; font-weight: 700; display: none; z-index: 2000; animation: slideIn 0.5s ease; }
+    @keyframes slideIn { from { transform: translateY(-50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+  </style>
+</head>
+<body>
+
+<aside class="sidebar">
+    <div class="sidebar-brand" style="font-size:22px; font-weight:800; margin-bottom:40px;"><i class="fa-solid fa-robot"></i> SmartHire</div>
+    <nav style="flex:1">
+        <a href="hr-pipeline.html" class="nav-item active"><i class="fa-solid fa-users"></i> Pipeline</a>
+        <a href="hr-jobs.html" class="nav-item"><i class="fa-solid fa-briefcase"></i> Job Manager</a>
+        <a href="hr-analytics.html" class="nav-item"><i class="fa-solid fa-chart-line"></i> Analytics</a>
+        <a href="hr-settings.html" class="nav-item"><i class="fa-solid fa-gear"></i> Settings</a>
+    </nav>
+    <div class="nav-item" onclick="logout()" style="color:#ff6b6b"><i class="fa-solid fa-power-off"></i> Logout</div>
+</aside>
+
+<main class="content">
+    <header style="margin-bottom:40px;">
+        <h1 style="font-size:32px;">Candidate Pipeline</h1>
+        <p style="opacity:0.6">Real-time applicant monitoring and AI scoring.</p>
+    </header>
+
+    <div class="table-container">
+        <table>
+            <thead><tr><th>Candidate</th><th>Applied Role</th><th>ATS Score</th><th>Technical</th><th>Status</th></tr></thead>
+            <tbody id="candidateTable">
+                <!-- Rows load here -->
+            </tbody>
+        </table>
+    </div>
+</main>
+
+<div id="live-alert"></div>
+
+<script>
+    const socket = io("http://127.0.0.1:5000");
+
+    // 🛑 REAL-TIME LISTENER
+    socket.on('new_activity', (data) => {
+        const alert = document.getElementById('live-alert');
+        alert.innerText = `Update: ${data.candidate_name} submitted ${data.role} test. Score: ${data.score}%`;
+        alert.style.display = 'block';
+        setTimeout(() => alert.style.display = 'none', 5000);
+        
+        fetchPipeline(); // Instantly refresh table
+    });
+
+    async function fetchPipeline() {
+        const res = await fetch('/api/hr/candidates', {
+            headers: { 'Authorization': `Bearer ${localStorage.getItem("smarthire_token")}` }
+        });
+        const data = await res.json();
+        document.getElementById('candidateTable').innerHTML = data.map(c => `
+            <tr>
+                <td><strong>${c.name}</strong></td>
+                <td>${c.role}</td>
+                <td><b style="color:#6fd3ff">${c.ats}%</b></td>
+                <td><b style="color:#a855f7">${c.tech}%</b></td>
+                <td><span style="background:rgba(255,255,255,0.1); padding:4px 8px; border-radius:5px; font-size:11px;">${c.status}</span></td>
+            </tr>
+        `).join("");
+    }
+
+    function logout() { localStorage.clear(); window.location.href='login.html'; }
+    window.onload = fetchPipeline;
+</script>
+</body>
+</html>

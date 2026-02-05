@@ -2,180 +2,325 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>SmartHire | Interview Insights</title>
+  <title>SmartHire | Performance Insights</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <!-- Fonts -->
+  
+  <!-- Fonts & Icons -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Montserrat:wght@600;700;800&display=swap" rel="stylesheet">
-
-  <!-- Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-
+  
   <!-- Main CSS -->
   <link rel="stylesheet" href="css/style.css">
+
+  <style>
+    /* =========================================
+       INSIGHTS SPECIFIC STYLES
+    ========================================= */
+    
+    /* Global Insights Grid */
+    .insights-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 25px;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 40px 20px;
+    }
+
+    .insights-grid .card {
+      height: auto;
+      min-height: 200px;
+      padding: 30px;
+    }
+
+    /* Skill Bar Fixes */
+    .skill-bar-container {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      margin: 8px 0 18px 0;
+      height: 8px;
+      overflow: hidden; /* Prevents bar overflow */
+      position: relative;
+    }
+
+    .skill-bar-fill {
+      height: 100%;
+      background: var(--accent);
+      width: 0%; 
+      border-radius: 10px;
+      transition: width 1.5s cubic-bezier(0.1, 0.42, 0.41, 1);
+    }
+
+    .skill-label {
+      display: block;
+      font-size: 13px;
+      font-weight: 500;
+      opacity: 0.8;
+      text-align: left;
+    }
+
+    /* AI Recommendation List */
+    #aiFeedbackList {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      width: 100%;
+      margin-top: 15px;
+    }
+
+    .insight-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 15px;
+      text-align: left;
+    }
+
+    .insight-item i {
+      font-size: 18px !important;
+      color: var(--accent);
+      min-width: 24px;
+      margin: 0 !important;
+      padding-top: 3px;
+    }
+
+    .insight-item span {
+      font-size: 14px;
+      line-height: 1.5;
+      opacity: 0.9;
+    }
+
+    /* Mode Theme Color Overrides */
+    body.mode-full { --accent: #a855f7; }          /* Purple */
+    body.mode-resume { --accent: #4ade80; }        /* Green */
+    body.mode-behavioral { --accent: #ffb700; }    /* Amber */
+    body.mode-communication { --accent: #06b6d4; } /* Cyan */
+  </style>
 </head>
 
 <body>
+  <div class="bg-effects"><span></span><span></span><span></span></div>
 
-<!-- Background -->
-<div class="bg-effects">
-  <span></span><span></span><span></span>
-</div>
+  <!-- NAVBAR -->
+  <nav class="navbar">
+    <div class="logo">SmartHire</div>
+    <div class="nav-actions">
+      <a href="candidate-dashboard.html" class="nav-link">Dashboard</a>
+      <button id="themeToggle" class="theme-btn"><i class="fa-solid fa-moon"></i></button>
+      
+      <div class="profile-menu">
+        <i class="fa-solid fa-user-circle"></i>
+        <div class="profile-dropdown">
+            <a href="candidate-dashboard.html">Dashboard</a>
+            <a href="profile.html">Profile</a>
+            <a href="login.html">Logout</a>
+        </div>
+      </div>
+    </div>
+  </nav>
 
-<!-- Navbar -->
-<nav class="navbar">
-  <div class="logo">SmartHire</div>
-  <div class="nav-actions">
-    <a href="candidate-dashboard.html" class="nav-link">Dashboard</a>
-  </div>
-</nav>
+  <!-- PAGE HEADER -->
+  <section class="hero dashboard">
+    <h1 id="pageTitle">Performance Insights</h1>
+    <p id="pageDesc">AI-driven analysis of your latest technical session</p>
+  </section>
 
-<!-- Hero -->
-<section class="hero dashboard">
-  <h1>Interview Insights</h1>
-  <p>Your AI-powered interview performance analysis</p>
-</section>
+  <!-- MAIN ANALYTICS GRID -->
+  <main class="insights-grid">
 
-<!-- INSIGHTS GRID -->
-<section class="features">
+    <!-- 1. SESSION OVERVIEW -->
+    <div class="card show">
+      <i class="fa-solid fa-chart-pie"></i>
+      <span id="overviewHeading">Session Overview</span>
+      <div id="summaryText" style="text-align: left; margin-top: 15px; font-size: 14px; line-height: 1.8;">
+          Loading session data...
+      </div>
+    </div>
 
-  <!-- SUMMARY -->
-  <div class="card show">
-    <i class="fa-solid fa-clipboard-list"></i>
-    <span>Interview Summary</span>
-    <small id="summaryText">
-      Loading summary…
-    </small>
-  </div>
+    <!-- 2. TOTAL SCORE -->
+    <div class="card show">
+      <i class="fa-solid fa-bullseye" id="scoreIcon"></i>
+      <span id="scoreHeading">Technical Score</span>
+      <h2 id="accuracyPercent" style="font-size: 42px; color: var(--accent); margin: 15px 0;">--%</h2>
+      <small id="accuracyText" style="opacity: 0.7;">Analyzing accuracy...</small>
+    </div>
 
-  <!-- PERFORMANCE -->
-  <div class="card show">
-    <i class="fa-solid fa-check-circle"></i>
-    <span>Question Accuracy</span>
-    <small id="accuracyStats">
-      Calculating performance…
-    </small>
+    <!-- 3. PROFICIENCY BARS (CONTEXT AWARE) -->
+    <div class="card show">
+      <i class="fa-solid fa-layer-group"></i>
+      <span id="barsHeading">Skill Proficiency</span>
+      
+      <div style="width: 100%; margin-top: 25px;">
+          <span class="skill-label" id="label1">Logic & Reasoning</span>
+          <div class="skill-bar-container"><div id="bar1" class="skill-bar-fill"></div></div>
+          
+          <span class="skill-label" id="label2">Language Syntax</span>
+          <div class="skill-bar-container"><div id="bar2" class="skill-bar-fill"></div></div>
+          
+          <span class="skill-label" id="label3">Problem Solving Speed</span>
+          <div class="skill-bar-container"><div id="bar3" class="skill-bar-fill"></div></div>
+      </div>
+    </div>
 
-    <div id="accuracyList" style="margin-top:10px;font-size:13px;"></div>
-  </div>
+    <!-- 4. AI RECOMMENDATIONS -->
+    <div class="card show">
+      <i class="fa-solid fa-robot"></i>
+      <span>AI Recommendations</span>
+      <div id="aiFeedbackList">
+        <!-- Injected via JS -->
+      </div>
+    </div>
 
-  <!-- AI FEEDBACK -->
-  <div class="card show">
-    <i class="fa-solid fa-robot"></i>
-    <span>AI Feedback</span>
-    <small id="aiFeedback">
-      Feedback will appear here.
-    </small>
-  </div>
+  </main>
 
-</section>
+  <!-- ACTION BUTTONS -->
+  <section style="display: flex; gap: 20px; justify-content: center; padding-bottom: 60px;">
+    <a href="interview-review.html" id="reviewBtn" class="cta" style="background: var(--glass); border: 1px solid var(--border); color: white;">
+        <i class="fa-solid fa-magnifying-glass"></i> Question Review
+    </a>
+    <button class="cta" onclick="alert('Exporting PDF Report...')">
+        <i class="fa-solid fa-file-pdf"></i> Export Result
+    </button>
+  </section>
 
-<!-- ACTIONS -->
-<section class="features">
+  <footer>© 2026 SmartHire • Performance Analytics</footer>
 
-  <button class="btn" onclick="downloadPDF()">
-    Download Interview Report (PDF)
-  </button>
+  <!-- SCRIPT LOGIC (The multi-mode engine) -->
+  <script src="js/ui.js"></script>
+  <script src="js/auth-guard.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const params = new URLSearchParams(window.location.search);
+        const mode = params.get("mode") || "technical";
 
-  <a href="interview-review.html" class="btn">
-    View Question Review
-  </a>
+        const title = document.getElementById("pageTitle");
+        const desc = document.getElementById("pageDesc");
+        const summary = document.getElementById("summaryText");
+        const barsHeading = document.getElementById("barsHeading");
+        const scoreHeading = document.getElementById("scoreHeading");
+        const accuracyText = document.getElementById("accuracyText");
+        const reviewBtn = document.getElementById("reviewBtn");
 
-</section>
+        // --- MODE 1: RESUME ---
+        if (mode === "resume") {
+            const data = JSON.parse(localStorage.getItem("resume_analysis_data") || "{}");
+            document.body.classList.add("mode-resume");
+            title.innerText = "Resume Performance";
+            desc.innerText = "AI-driven analysis of your CV compatibility.";
+            barsHeading.innerText = "ATS Compatibility";
+            scoreHeading.innerText = "ATS Score";
+            accuracyText.innerText = "Overall Parsing Confidence";
+            reviewBtn.style.display = "none";
 
-<footer>
-  © 2026 SmartHire • Interview Insights
-</footer>
+            summary.innerHTML = `<strong>File:</strong> ${data.filename || 'N/A'}<br><strong>Mode:</strong> Resume Analysis<br><strong>Status:</strong> ${data.score > 80 ? 'Ready' : 'Needs Polish'}`;
+            document.getElementById("accuracyPercent").innerText = (data.score || '--') + "%";
+            
+            setLabels("Role Alignment", "Keyword Density", "ATS Readability");
+            animateBars(data.logic || 70, data.syntax || 65, data.speed || 90);
+            setFeedback("fa-check", "Strong technical keyword presence.", "fa-file-code", "Standardize date formats for better parsing.", "fa-wand-magic-sparkles", "Add more quantifiable achievements.");
 
-<!-- Scripts -->
-<script src="js/ui.js"></script>
-<script src="js/auth-guard.js"></script>
+        // --- MODE 2: BEHAVIORAL ---
+        } else if (mode === "behavioral") {
+            const data = JSON.parse(localStorage.getItem("behavioral_analysis") || "{}");
+            document.body.classList.add("mode-behavioral");
+            title.innerText = "Behavioral Insights";
+            desc.innerText = "Analysis of your soft skills and STAR method structure.";
+            barsHeading.innerText = "Communication Profile";
+            scoreHeading.innerText = "Soft Skills Score";
+            reviewBtn.style.display = "none";
+            
+            summary.innerHTML = `<strong>Type:</strong> HR Mock Interview<br><strong>Focus:</strong> Leadership & Empathy<br><strong>Date:</strong> ${new Date().toLocaleDateString()}`;
+            document.getElementById("accuracyPercent").innerText = (data.score || '--') + "%";
 
-<script>
-/* ===============================
-   LOAD INTERVIEW INSIGHTS
-================================ */
+            setLabels("Clarity & Structure", "Confidence Level", "Tone & Sentiment");
+            animateBars(data.comm || 80, data.conf || 70, data.tone || 85);
+            setFeedback("fa-comments", "Excellent STAR method usage.", "fa-smile", "Your eye contact remained steady.", "fa-bolt", "Reduce filler words (um, like) to sound more authoritative.");
 
-const review = JSON.parse(localStorage.getItem("interviewReview"));
+        // --- MODE 3: FULL MOCK ---
+        } else if (mode === "full") {
+            const data = JSON.parse(localStorage.getItem("full_mock_data") || "{}");
+            document.body.classList.add("mode-full");
+            title.innerText = "Mock Interview Report";
+            desc.innerText = "Comprehensive report covering Tech, HR, and Culture Fit.";
+            barsHeading.innerText = "360° Evaluation";
+            scoreHeading.innerText = "Employability Score";
+            
+            summary.innerHTML = `<strong>Session:</strong> Full Simulation<br><strong>Duration:</strong> 30 Minutes<br><strong>Status:</strong> Employability High`;
+            document.getElementById("accuracyPercent").innerText = (data.score || '--') + "%";
 
-const summaryText = document.getElementById("summaryText");
-const accuracyStats = document.getElementById("accuracyStats");
-const accuracyList = document.getElementById("accuracyList");
-const aiFeedback = document.getElementById("aiFeedback");
+            setLabels("Technical Accuracy", "Leadership Presence", "Cultural Alignment");
+            animateBars(85, 80, 92);
+            setFeedback("fa-robot", "Balanced performance across all domains.", "fa-brain", "Strong logic during technical scenarios.", "fa-briefcase", "Culture-fit score is exceptionally high.");
 
-if (!review) {
-  summaryText.innerText = "No interview data found.";
-} else {
-  /* SUMMARY */
-  summaryText.innerHTML = `
-    Type: ${review.meta.type}<br>
-    Language: ${review.meta.language.toUpperCase()}<br>
-    Date: ${review.meta.date}<br>
-    Questions: ${review.results.length}
-  `;
+        // --- MODE 4: COMMUNICATION (ADDED THIS BACK IN) ---
+        } else if (mode === "communication") {
+            const data = JSON.parse(localStorage.getItem("comm_analysis_data") || "{}");
+            document.body.classList.add("mode-communication");
+            title.innerText = "Communication Insights";
+            desc.innerText = "AI Analysis of your speaking pace, tone, and clarity.";
+            barsHeading.innerText = "Fluency Metrics";
+            scoreHeading.innerText = "Speaking Score";
+            reviewBtn.style.display = "none";
 
-  /* PERFORMANCE */
-  const correct = review.results.filter(q => q.isCorrect).length;
-  const total = review.results.length;
-  const accuracy = Math.round((correct / total) * 100);
+            summary.innerHTML = `<strong>Metric:</strong> Verbal Fluency<br><strong>Avg Pace:</strong> ${data.pace || 0} WPM<br><strong>Fillers:</strong> ${data.fillers || 0} detected`;
+            document.getElementById("accuracyPercent").innerText = (data.score || '--') + "%";
+            accuracyText.innerText = "Overall Confidence Score";
 
-  accuracyStats.innerHTML = `
-    Accuracy: ${accuracy}%<br>
-    Correct: ${correct} / ${total}
-  `;
+            setLabels("Speaking Pace", "Vocal Energy", "Clarity");
+            
+            // Normalize pace: 140wpm is ideal (100%), scale down if too slow/fast
+            let paceScore = Math.min(((data.pace || 100) / 150) * 100, 100); 
+            
+            animateBars(paceScore, data.energy || 75, data.clarity || 80);
 
-  review.results.forEach((q, index) => {
-    const row = document.createElement("div");
-    row.style.color = q.isCorrect ? "#6fd3ff" : "#ff6b6b";
-    row.innerHTML = `Q${index + 1}: ${q.isCorrect ? "✔ Correct" : "✖ Incorrect"}`;
-    accuracyList.appendChild(row);
-  });
+            setFeedback(
+                "fa-gauge-high", `Your pace (${data.pace || 0} WPM) is conversational.`,
+                "fa-triangle-exclamation", `Detected ${data.fillers || 0} filler words.`,
+                "fa-microphone-lines", "Vocal energy variation is good."
+            );
 
-  /* AI FEEDBACK */
-  aiFeedback.innerHTML = `
-    • Focus on weak concepts<br>
-    • Improve time management<br>
-    • Practice similar interview questions
-  `;
-}
+        // --- MODE 5: TECHNICAL (DEFAULT) ---
+        } else {
+            const review = JSON.parse(localStorage.getItem("interviewReview") || "{}");
+            const score = review.results ? Math.round((review.results.filter(r=>r.isCorrect===true).length / review.results.length) * 100) : 0;
+            
+            title.innerText = "Technical Insights";
+            desc.innerText = "AI-driven analysis of your latest technical assessment.";
+            scoreHeading.innerText = "Technical Score";
 
-/* ===============================
-   DOWNLOAD PDF
-================================ */
-function downloadPDF() {
-  if (!review) return alert("No interview data found");
+            summary.innerHTML = `<strong>Language:</strong> ${review.meta?.language.toUpperCase() || 'N/A'}<br><strong>Type:</strong> Technical Assessment<br><strong>Date:</strong> ${review.meta?.date || 'Today'}`;
+            document.getElementById("accuracyPercent").innerText = score + "%";
+            
+            setLabels("Logic & Reasoning", "Language Syntax", "Problem Solving Speed");
+            animateBars(score, score - 10, 85);
+            setFeedback("fa-star", "Solid grasp of data structures.", "fa-clock", "Good pace in solving the coding challenge.", "fa-book", "Explore O(n) complexity optimizations.");
+        }
 
-  let content = `
-SMARTHIRE – INTERVIEW REPORT
+        // --- HELPER FUNCTIONS ---
+        function setLabels(l1, l2, l3) {
+            document.getElementById("label1").innerText = l1;
+            document.getElementById("label2").innerText = l2;
+            document.getElementById("label3").innerText = l3;
+        }
 
-Type: ${review.meta.type}
-Language: ${review.meta.language}
-Date: ${review.meta.date}
+        function animateBars(v1, v2, v3) {
+            setTimeout(() => {
+                document.getElementById("bar1").style.width = Math.min(v1, 100) + "%";
+                document.getElementById("bar2").style.width = Math.min(v2, 100) + "%";
+                document.getElementById("bar3").style.width = Math.min(v3, 100) + "%";
+            }, 500);
+        }
 
-----------------------------------
-`;
-
-  review.results.forEach((q, i) => {
-    content += `
-Q${i + 1}: ${q.question}
-Your Answer: ${q.user}
-Correct Answer: ${q.correct}
-Result: ${q.isCorrect ? "Correct" : "Incorrect"}
-Time Taken: ${q.timeTaken}s
-
-`;
-  });
-
-  const blob = new Blob([content], { type: "application/pdf" });
-  const link = document.createElement("a");
-  link.href = URL.createObjectURL(blob);
-  link.download = "SmartHire_Interview_Report.pdf";
-  link.click();
-}
-</script>
-
-
+        function setFeedback(i1, t1, i2, t2, i3, t3) {
+            document.getElementById("aiFeedbackList").innerHTML = `
+                <div class="insight-item"><i class="fa-solid ${i1}"></i><span>${t1}</span></div>
+                <div class="insight-item"><i class="fa-solid ${i2}"></i><span>${t2}</span></div>
+                <div class="insight-item"><i class="fa-solid ${i3}"></i><span>${t3}</span></div>
+            `;
+        }
+    });
+  </script>
 </body>
-</html>
+</html> 

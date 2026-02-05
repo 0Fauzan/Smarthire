@@ -2,108 +2,253 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>SmartHire | Candidate Profile</title>
+  <title>SmartHire | My Profile</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- Fonts -->
+  <!-- Fonts & Icons -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Montserrat:wght@600;700;800&display=swap" rel="stylesheet">
-
-  <!-- Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
   <!-- Main CSS -->
   <link rel="stylesheet" href="css/style.css">
+
+  <style>
+    /* =========================================
+       PROFILE LAYOUT REFACTOR
+    ========================================= */
+    .profile-container {
+      max-width: 1200px; /* Wider container */
+      margin: 0 auto;
+      padding: 40px 20px;
+    }
+
+    .profile-layout {
+      display: grid;
+      grid-template-columns: 320px 1fr; /* Sidebar | Main Content */
+      gap: 30px;
+      align-items: start;
+    }
+
+    /* LEFT SIDEBAR CARD */
+    .profile-sidebar {
+      background: var(--glass);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 35px 25px;
+      text-align: center;
+      backdrop-filter: blur(10px);
+      position: sticky;
+      top: 100px; /* Sticks when scrolling */
+    }
+
+    .avatar-circle {
+      width: 110px;
+      height: 110px;
+      margin: 0 auto 20px;
+      background: linear-gradient(135deg, var(--accent), #2c5364);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 45px;
+      color: #fff;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+      border: 4px solid rgba(255,255,255,0.1);
+    }
+
+    .sidebar-name {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 24px;
+      font-weight: 700;
+      margin: 0;
+    }
+
+    .sidebar-role {
+      font-size: 14px;
+      opacity: 0.7;
+      margin-top: 5px;
+      margin-bottom: 20px;
+    }
+
+    .divider {
+      height: 1px;
+      background: var(--border);
+      width: 100%;
+      margin: 20px 0;
+    }
+
+    .contact-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 13px;
+      opacity: 0.9;
+      margin-bottom: 12px;
+      text-align: left;
+      background: rgba(255,255,255,0.05);
+      padding: 10px;
+      border-radius: 8px;
+    }
+
+    /* RIGHT CONTENT GRID */
+    .profile-content {
+      display: grid;
+      grid-template-columns: 1fr; /* Stack vertically for cleanliness */
+      gap: 20px;
+    }
+
+    .detail-section {
+      background: var(--glass);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 30px;
+      position: relative;
+      transition: transform 0.3s ease;
+    }
+
+    .detail-section:hover {
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .detail-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 15px;
+      color: var(--accent);
+      font-size: 18px;
+      font-weight: 600;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 15px;
+    }
+
+    .detail-body {
+      font-size: 14px;
+      line-height: 1.7;
+      opacity: 0.9;
+      white-space: pre-wrap; /* Preserves newlines */
+    }
+
+    /* Mobile Responsive */
+    @media (max-width: 900px) {
+      .profile-layout {
+        grid-template-columns: 1fr; /* Stack sidebar on top */
+      }
+      .profile-sidebar {
+        position: relative;
+        top: 0;
+      }
+    }
+  </style>
 </head>
 
 <body>
 
-  <!-- Background -->
-  <div class="bg-effects">
-    <span></span><span></span><span></span>
-  </div>
+  <div class="bg-effects"><span></span><span></span><span></span></div>
 
-  <!-- Navbar -->
   <nav class="navbar">
     <div class="logo">SmartHire</div>
-
     <div class="nav-actions">
-      <button id="themeToggle" class="theme-btn">
-        <i class="fa-solid fa-moon"></i>
-      </button>
-
+      <button id="themeToggle" class="theme-btn"><i class="fa-solid fa-moon"></i></button>
       <div class="profile-menu">
-        <i class="fa-solid fa-user"></i>
+        <i class="fa-solid fa-user-circle"></i>
         <div class="profile-dropdown">
           <a href="candidate-dashboard.html">Dashboard</a>
           <a href="profile.html">Profile</a>
-          <a href="login.html">Logout</a>
+          <a href="login.html" id="logoutBtn">Logout</a>
         </div>
       </div>
     </div>
   </nav>
 
-  <!-- Hero -->
-  <section class="hero dashboard">
-    <h1>Candidate Profile</h1>
-    <p>Complete your profile to unlock AI features</p>
-  </section>
+  <main class="profile-container">
+    <div class="profile-layout">
+      
+      <!-- LEFT: SIDEBAR CARD -->
+      <aside class="profile-sidebar reveal show">
+        <div class="avatar-circle">
+          <i class="fa-solid fa-user"></i>
+        </div>
+        <h2 class="sidebar-name" id="viewName">Loading...</h2>
+        <p class="sidebar-role" id="viewRole">Loading Role...</p>
+        
+        <a href="profile-form.html" class="cta" style="width:100%; display:block; padding:10px 0; font-size:13px;">
+          <i class="fa-solid fa-pen-to-square"></i> Edit Profile
+        </a>
 
-  <!-- Profile Content -->
-  <section class="features resume-grid">
+        <div class="divider"></div>
 
-    <!-- Profile Completion -->
-    <div class="card reveal">
-      <i class="fa-solid fa-chart-pie"></i>
-      <span>Profile Completion</span>
-      <small>65% completed</small>
+        <div class="contact-item">
+          <i class="fa-solid fa-envelope" style="color: var(--accent);"></i>
+          <span id="viewEmail">email@example.com</span>
+        </div>
+        <!-- Add Phone/Location if you have them in JS -->
+      </aside>
+
+      <!-- RIGHT: DETAILS CONTENT -->
+      <div class="profile-content">
+        
+        <!-- Education -->
+        <div class="detail-section reveal show">
+          <div class="detail-header">
+            <i class="fa-solid fa-graduation-cap"></i> Education
+          </div>
+          <p class="detail-body" id="viewEducation">No education details added yet.</p>
+        </div>
+
+        <!-- Skills -->
+        <div class="detail-section reveal show">
+          <div class="detail-header">
+            <i class="fa-solid fa-code"></i> Technical Skills
+          </div>
+          <p class="detail-body" id="viewSkills">No skills listed yet.</p>
+        </div>
+
+        <!-- Projects -->
+        <div class="detail-section reveal show">
+          <div class="detail-header">
+            <i class="fa-solid fa-folder-open"></i> Key Projects
+          </div>
+          <p class="detail-body" id="viewProjects">No projects added yet.</p>
+        </div>
+
+      </div>
+
     </div>
-
-    <!-- BASIC INFO -->
-    <div class="card reveal">
-      <i class="fa-solid fa-id-card"></i>
-      <span>Basic Information</span>
-      <small>Name, contact & links</small>
-    </div>
-
-    <!-- EDUCATION -->
-    <div class="card reveal">
-      <i class="fa-solid fa-graduation-cap"></i>
-      <span>Education</span>
-      <small>Degree & institution</small>
-    </div>
-
-    <!-- SKILLS -->
-    <div class="card reveal">
-      <i class="fa-solid fa-code"></i>
-      <span>Skills</span>
-      <small>Technical & tools</small>
-    </div>
-
-    <!-- PROJECTS -->
-    <div class="card reveal">
-      <i class="fa-solid fa-diagram-project"></i>
-      <span>Projects / Experience</span>
-      <small>Work & projects</small>
-    </div>
-
-    <!-- AI INTERVIEW LOCK -->
-    <div class="card reveal">
-      <i class="fa-solid fa-robot"></i>
-      <span>AI Interview</span>
-      <small>Complete profile to unlock</small>
-    </div>
-
-  </section>
+  </main>
 
   <footer>
     © 2026 SmartHire • Candidate Profile
   </footer>
 
-  <!-- Scripts -->
   <script src="js/ui.js"></script>
   <script src="js/auth-guard.js"></script>
+  
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      // 1. Load Data
+      const savedProfile = JSON.parse(localStorage.getItem("userProfile") || "{}");
+      const authUser = JSON.parse(localStorage.getItem("user") || "{}");
+
+      // 2. Populate Sidebar
+      document.getElementById("viewName").innerText = savedProfile.name || authUser.name || "Candidate Name";
+      document.getElementById("viewRole").innerText = savedProfile.role || "Role Not Set";
+      document.getElementById("viewEmail").innerText = savedProfile.email || authUser.email || "Email not found";
+
+      // 3. Populate Content
+      if (savedProfile.education) document.getElementById("viewEducation").innerText = savedProfile.education;
+      
+      // Skills Formatting (Badges look nicer)
+      if (savedProfile.skills) {
+        // Just text for now, but you could split by comma and make badges
+        document.getElementById("viewSkills").innerText = savedProfile.skills;
+      }
+
+      if (savedProfile.projects) document.getElementById("viewProjects").innerText = savedProfile.projects;
+    });
+  </script>
 
 </body>
 </html>

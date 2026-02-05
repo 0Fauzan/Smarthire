@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>SmartHire | Recruiter Settings</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    /* Reuse the same Sidebar & Body styles from Dashboard for consistency */
+    :root { --sidebar-w: 280px; --accent: #6fd3ff; --bg: #0b141a; }
+    body { display: flex; height: 100vh; background: var(--bg); color: white; overflow: hidden; margin: 0; }
+    .sidebar { width: var(--sidebar-w); background: rgba(15, 23, 42, 0.98); border-right: 1px solid rgba(255,255,255,0.1); padding: 35px 25px; display: flex; flex-direction: column; flex-shrink: 0; }
+    .main-content { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+    .top-bar { height: 75px; border-bottom: 1px solid rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: flex-end; padding: 0 40px; }
+    .scroll-view { flex: 1; overflow-y: auto; padding: 40px; }
+    
+    .nav-item { padding: 14px 18px; border-radius: 12px; cursor: pointer; display: flex; align-items: center; gap: 15px; color: rgba(255,255,255,0.5); text-decoration: none; margin-bottom: 8px; font-size: 14px; }
+    .nav-item.active { background: rgba(111, 211, 255, 0.1); color: var(--accent); }
+    
+    .settings-card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); padding: 30px; border-radius: 20px; max-width: 700px; }
+    .form-group { margin-bottom: 20px; }
+    label { display: block; margin-bottom: 8px; font-size: 12px; opacity: 0.6; text-transform: uppercase; }
+    input { width: 100%; padding: 12px; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; color: white; outline: none; }
+  </style>
+</head>
+<body>
+
+  <aside class="sidebar">
+    <div style="font-size:22px; font-weight:800; margin-bottom:40px;"><i class="fa-solid fa-robot"></i> SmartHire</div>
+    <nav style="flex:1">
+        <a href="hr-dashboard.html" class="nav-item"><i class="fa-solid fa-users-viewfinder"></i> Pipeline</a>
+        <a href="hr-jobs.html" class="nav-item"><i class="fa-solid fa-briefcase"></i> Job Manager</a>
+        <a href="hr-settings.html" class="nav-item active"><i class="fa-solid fa-gear"></i> Settings</a>
+    </nav>
+  </aside>
+
+  <div class="main-content">
+    <div class="top-bar">
+        <a href="hr-dashboard.html" class="nav-link" style="font-size: 13px;">Back to Pipeline</a>
+    </div>
+
+    <main class="scroll-view">
+        <h1>Recruiter Settings</h1>
+        <p style="opacity:0.6; margin-bottom: 30px;">Manage organization profile and hiring workflow.</p>
+
+        <div class="settings-card">
+            <h3>Organization Profile</h3>
+            <div class="form-group" style="margin-top:20px;">
+                <label>Company Name</label>
+                <input type="text" value="TechCorp Global">
+            </div>
+            <div class="form-group">
+                <label>Administrator Email</label>
+                <input type="email" value="admin@techcorp.com">
+            </div>
+            <button class="cta" style="margin-top: 10px;">Update Details</button>
+        </div>
+    </main>
+  </div>
+
+</body>
+</html>

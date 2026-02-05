@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>SmartHire | Job Management</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    /* Reuse Sidebar Layout from Pipeline */
+    body { display: flex; height: 100vh; background: #0b141a; color: white; overflow: hidden; }
+    .sidebar { width: 280px; background: #0f172a; border-right: 1px solid rgba(255,255,255,0.1); padding: 30px; display: flex; flex-direction: column; }
+    .content { flex: 1; padding: 40px; overflow-y: auto; }
+    
+    .jobs-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
+    .job-card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); padding: 30px; border-radius: 20px; transition: 0.3s; }
+    .job-card:hover { border-color: #6fd3ff; transform: translateY(-5px); }
+  </style>
+</head>
+<body>
+
+<aside class="sidebar">
+    <div class="sidebar-brand" style="font-size:22px; font-weight:800; margin-bottom:40px;"><i class="fa-solid fa-robot"></i> SmartHire</div>
+    <nav style="flex:1">
+        <a href="hr-pipeline.html" class="nav-item"><i class="fa-solid fa-users"></i> Pipeline</a>
+        <a href="hr-jobs.html" class="nav-item active"><i class="fa-solid fa-briefcase"></i> Job Manager</a>
+        <a href="hr-analytics.html" class="nav-item"><i class="fa-solid fa-chart-line"></i> Analytics</a>
+        <a href="hr-settings.html" class="nav-item"><i class="fa-solid fa-gear"></i> Settings</a>
+    </nav>
+</aside>
+
+<main class="content">
+    <header style="display:flex; justify-content:space-between; align-items:center; margin-bottom:40px;">
+        <h1>Job Management</h1>
+        <button class="cta" onclick="alert('Open Post Job Modal')">+ Post New Opening</button>
+    </header>
+
+    <div class="jobs-grid" id="jobsGrid">
+        <!-- Fetched job cards -->
+    </div>
+</main>
+
+<script>
+    async function fetchJobs() {
+        const res = await fetch('/api/jobs');
+        const data = await res.json();
+        document.getElementById('jobsGrid').innerHTML = data.map(j => `
+            <div class="job-card">
+                <h3>${j.title}</h3>
+                <p style="font-size:12px; opacity:0.6; margin-top:10px;">${j.dept} • ${j.location}</p>
+                <div style="margin-top:20px; display:flex; gap:10px;">
+                    <span style="background:rgba(255,255,255,0.1); padding:4px 10px; border-radius:20px; font-size:11px;">12 Applicants</span>
+                </div>
+            </div>
+        `).join("");
+    }
+    window.onload = fetchJobs;
+</script>
+</body>
+</html>

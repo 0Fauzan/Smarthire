@@ -2,108 +2,439 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>SmartHire | AI Mock Interview</title>
+  <title>SmartHire | AI Interview Session</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <!-- Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Montserrat:wght@600;700;800&display=swap" rel="stylesheet">
-
-  <!-- Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-
-  <!-- Main CSS -->
   <link rel="stylesheet" href="css/style.css">
+  <style>
+    /* =========================================
+       UI FIXES: LAYOUT & RESPONSIVENESS
+    ========================================= */
+
+    /* 1. Main Container - Prevent Overlap */
+    .interview-main {
+      display: grid;
+      grid-template-columns: 1fr 1fr; /* Side-by-side on large screens */
+      gap: 40px;
+      max-width: 1300px;
+      margin: 30px auto;
+      padding: 0 40px;
+      align-items: start;
+      position: relative;
+      z-index: 1; /* Ensure content is above background effects */
+    }
+
+    /* 2. Video Stage */
+    .video-stage {
+      background: #000;
+      border-radius: 20px;
+      aspect-ratio: 16/10;
+      position: relative;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.2);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      width: 100%; /* Ensure it fits container */
+    }
+
+    #webcamFeed {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transform: scaleX(-1);
+    }
+
+    .eye-tracking-overlay {
+      position: absolute;
+      bottom: 20px;
+      left: 20px;
+      background: rgba(0,0,0,0.7); /* Darker for readability */
+      backdrop-filter: blur(4px);
+      padding: 6px 14px;
+      border-radius: 30px;
+      font-size: 11px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: white;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    /* 3. Question Card - Fix Readability */
+    .question-card {
+      background: rgba(18, 25, 38, 0.75); /* Darker, less transparent background */
+      backdrop-filter: blur(20px);        /* Stronger blur */
+      padding: 35px;
+      border-radius: 24px;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+      min-height: 480px;
+    }
+
+    /* 4. Timer Styling */
+    .timer-pill {
+      position: absolute;
+      top: 25px;
+      right: 25px;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255,255,255,0.2);
+      color: var(--accent);
+      padding: 6px 14px;
+      border-radius: 10px;
+      font-weight: 700;
+      font-size: 13px;
+      letter-spacing: 0.5px;
+    }
+
+    /* 5. Input Area & Mic Button */
+    .input-wrapper {
+      position: relative;
+      margin-top: 25px;
+      flex-grow: 1; 
+    }
+
+    textarea {
+      width: 100%;
+      height: 200px;
+      background: rgba(0, 0, 0, 0.4) !important; /* Dark background for text contrast */
+      border: 1px solid rgba(255, 255, 255, 0.15) !important;
+      border-radius: 16px !important;
+      padding: 20px;
+      padding-bottom: 50px; /* Space for button at bottom */
+      color: white !important;
+      font-size: 15px;
+      line-height: 1.6;
+      resize: none;
+      outline: none;
+      transition: border-color 0.3s;
+    }
+
+    textarea:focus {
+      border-color: var(--accent) !important;
+      background: rgba(0, 0, 0, 0.6) !important;
+    }
+
+    /* Floating Mic Button - Positioned Inside */
+    .mic-btn {
+      position: absolute;
+      bottom: 15px;
+      right: 15px;
+      width: 50px;
+      height: 50px;
+      background: var(--accent);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      cursor: pointer;
+      border: none;
+      font-size: 20px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+      transition: all 0.2s ease;
+      z-index: 10;
+    }
+
+    .mic-btn:hover { transform: scale(1.1); filter: brightness(1.1); }
+    
+    .mic-btn.active {
+        background: #ff6b6b;
+        animation: pulseMic 1.5s infinite;
+    }
+    
+    @keyframes pulseMic {
+        0% { box-shadow: 0 0 0 0 rgba(255, 107, 107, 0.4); }
+        70% { box-shadow: 0 0 0 12px rgba(255, 107, 107, 0); }
+        100% { box-shadow: 0 0 0 0 rgba(255, 107, 107, 0); }
+    }
+
+    .footer-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 20px;
+      padding-top: 20px;
+      border-top: 1px solid rgba(255,255,255,0.1);
+    }
+
+    #nextBtn {
+      background: var(--accent);
+      color: white;
+      padding: 10px 25px;
+      border-radius: 30px;
+      font-weight: 700;
+      border: none;
+      cursor: pointer;
+      transition: 0.3s;
+      font-size: 14px;
+    }
+
+    #nextBtn:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+    
+    /* Theme overrides */
+    body.mode-full { --accent: #a855f7; }
+    body.mode-full .timer-pill { color: #a855f7; }
+    body.mode-full #nextBtn, body.mode-full .mic-btn { background: #a855f7; }
+
+    /* =========================================
+       🛑 RESPONSIVE FIX (Prevents Overlap)
+    ========================================= */
+    @media (max-width: 950px) {
+      .interview-main {
+        grid-template-columns: 1fr; /* Stack vertically on tablets/small laptops */
+        gap: 30px;
+        padding: 0 20px;
+      }
+
+      .video-stage {
+        max-width: 100%;
+        margin: 0 auto;
+        height: auto;
+      }
+
+      .question-card {
+        min-height: auto;
+      }
+    }
+  </style>
 </head>
 
 <body>
+  <div class="bg-effects"><span></span><span></span><span></span></div>
 
-  <!-- Background -->
-  <div class="bg-effects">
-    <span></span><span></span><span></span>
-  </div>
-
-  <!-- Navbar -->
   <nav class="navbar">
     <div class="logo">SmartHire</div>
-
     <div class="nav-actions">
-      <a href="candidate-interview.html" class="nav-link">Back</a>
-      <button id="themeToggle" class="theme-btn">
-        <i class="fa-solid fa-moon"></i>
-      </button>
+      <div id="modeBadge" class="status-badge" style="background: rgba(255,255,255,0.1);">INITIALIZING...</div>
+      <button id="themeToggle" class="theme-btn"><i class="fa-solid fa-moon"></i></button>
     </div>
   </nav>
 
-  <!-- Interview Header -->
-  <section class="hero dashboard">
-    <h1>AI Mock Interview</h1>
-    <p>Answer questions as you would in a real interview</p>
+  <section class="hero dashboard" style="padding-top: 40px; padding-bottom: 20px;">
+    <h1 id="pageTitle" style="margin-bottom: 5px;">AI Mock Interview</h1>
+    <p id="pageDesc" style="font-size: 16px; opacity: 0.8;">Practice common behavioral questions with real-time feedback.</p>
   </section>
 
-  <!-- Interview Panel -->
-  <section class="features">
+  <main class="interview-main">
+    
+    <!-- LEFT: VIDEO STAGE -->
+    <div class="video-stage">
+      <video id="webcamFeed" autoplay playsinline muted></video>
+      <div class="eye-tracking-overlay">
+        <i class="fa-solid fa-eye" id="eyeIcon"></i>
+        <span>AI Eye-Tracking Active</span>
+      </div>
+    </div>
 
-    <!-- Instructions -->
-    <div class="card show">
-      <i class="fa-solid fa-circle-info"></i>
-      <span>Instructions</span>
-      <small>
-        Answer clearly. Timer starts once interview begins.
+    <!-- RIGHT: QUESTION CARD -->
+    <div class="question-card">
+      <div class="timer-pill" id="timer">01:00</div>
+      
+      <small style="opacity: 0.6; text-transform: uppercase; letter-spacing: 1px; font-size: 11px;">
+        Question <span id="qNumber">1</span> of 5
       </small>
+      
+      <h2 id="qText" style="margin-top: 15px; font-size: 24px; line-height: 1.4; font-weight: 700;">
+        "Loading question..."
+      </h2>
+
+      <div class="input-wrapper">
+        <textarea id="userResponse" placeholder="Type your answer here or click the mic to speak..."></textarea>
+        
+        <!-- MICROPHONE BUTTON (Inside Wrapper) -->
+        <button class="mic-btn" onclick="toggleMic(this)" id="micBtn">
+          <i class="fa-solid fa-microphone"></i>
+        </button>
+      </div>
+
+      <div class="footer-actions">
+        <small id="aiFocus" style="opacity: 0.6; font-size: 13px;">
+            <i class="fa-solid fa-robot" style="margin-right: 5px;"></i> AI is listening...
+        </small>
+        <button id="nextBtn">Next Question <i class="fa-solid fa-arrow-right"></i></button>
+      </div>
     </div>
 
-    <!-- Question -->
-    <div class="card show">
-  <i class="fa-solid fa-question"></i>
-  <span>
-    Question <small id="qCounter">(1 / 5)</small>
-  </span>
-  <small id="questionText">
-    Tell me about yourself.
-  </small>
-</div>
+  </main>
 
-    <!-- Answer Box -->
-    <div class="card show">
-      <i class="fa-solid fa-pen"></i>
-      <span>Your Answer</span>
-      <textarea
-        style="
-          width: 100%;
-          height: 80px;
-          margin-top: 10px;
-          border-radius: 10px;
-          padding: 10px;
-          border: none;
-          font-size: 14px;
-          resize: none;
-        "
-        placeholder="Type your answer here..."
-      ></textarea>
-    </div>
-
-    <!-- Controls -->
-    <div class="card show">
-  <i class="fa-solid fa-clock"></i>
-  <span>Timer</span>
-  <small id="timer">02:00</small>
-
-  <button class="btn" id="nextBtn" style="margin-top:10px;">
-    Next Question
-  </button>
-</div>
-  </section>
-
-  <footer>
-    © 2026 SmartHire • AI Mock Interview
-  </footer>
-
-  <!-- Scripts -->
+  <!-- Script Logic (Web Speech API) -->
   <script src="js/ui.js"></script>
-  <script src="js/auth-guard.js"></script>
-  <script src="js/mock-interview.js"></script>
+  <script>
+    // --- MODE CONFIGURATION ---
+    const params = new URLSearchParams(window.location.search);
+    const mode = params.get("mode") || "behavioral";
+    const statusText = document.getElementById('aiFocus');
 
+    const config = {
+      behavioral: {
+        title: "Behavioral Practice",
+        desc: "Focusing on STAR method (Situation, Task, Action, Result).",
+        badge: "HR ROUND",
+        focus: "AI is analyzing structural clarity.",
+        questions: [
+          "Tell me about a time you handled a conflict with a teammate.",
+          "What is your greatest weakness and how are you improving it?",
+          "Describe a situation where you had to work under a tight deadline.",
+          "Why do you want to work for this company specifically?",
+          "How do you handle constructive criticism?"
+        ]
+      },
+      full: {
+        title: "Full AI Mock Interview",
+        desc: "A comprehensive simulation including technical and situational logic.",
+        badge: "FULL SIMULATION",
+        focus: "AI is analyzing technical accuracy and presence.",
+        questions: [
+          "Welcome. Please introduce yourself and your professional background.",
+          "Technical: In your experience, what are the keys to scalable software architecture?",
+          "Behavioral: Tell me about a time you had to lead a project under pressure.",
+          "Scenario: If a client changes requirements mid-sprint, what is your approach?",
+          "Conclusion: Why are you the best fit for this high-performance role?"
+        ]
+      }
+    };
+
+    const currentMode = config[mode];
+
+    // --- INITIALIZE UI ---
+    document.getElementById('pageTitle').innerText = currentMode.title;
+    document.getElementById('pageDesc').innerText = currentMode.desc;
+    document.getElementById('modeBadge').innerText = currentMode.badge;
+    if(mode === 'full') document.body.classList.add('mode-full');
+
+    // --- VARIABLES ---
+    let currentIdx = 0;
+    let timeLeft = 60;
+    const timerEl = document.getElementById('timer');
+    const qTextEl = document.getElementById('qText');
+    const qNumEl = document.getElementById('qNumber');
+    const nextBtn = document.getElementById('nextBtn');
+    const responseField = document.getElementById('userResponse');
+    
+    // --- REAL SPEECH RECOGNITION ---
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    let recognition = null;
+    let isRecording = false;
+
+    if (SpeechRecognition) {
+        recognition = new SpeechRecognition();
+        recognition.continuous = true;      
+        recognition.interimResults = false; // Fixes duplication bug
+        recognition.lang = 'en-US';
+
+        recognition.onstart = () => {
+            statusText.innerText = "Listening... Speak clearly.";
+            statusText.style.color = "#4ade80";
+        };
+
+        recognition.onresult = (event) => {
+            let finalTranscript = '';
+            for (let i = event.resultIndex; i < event.results.length; ++i) {
+                if (event.results[i].isFinal) {
+                    finalTranscript += event.results[i][0].transcript + " ";
+                }
+            }
+            if (finalTranscript) {
+                responseField.value += finalTranscript;
+                responseField.scrollTop = responseField.scrollHeight;
+            }
+        };
+
+        recognition.onerror = (event) => {
+            console.error("Speech Error:", event.error);
+            isRecording = false;
+            stopRecordingUI();
+            statusText.innerText = `Mic Error: ${event.error}`;
+            statusText.style.color = "#ff6b6b";
+        };
+
+        recognition.onend = () => {
+            if (isRecording) recognition.start();
+            else {
+                statusText.innerText = "Microphone paused.";
+                statusText.style.color = "rgba(255,255,255,0.6)";
+            }
+        };
+    } else {
+        alert("Your browser does not support Speech-to-Text. Please use Chrome.");
+    }
+
+    function toggleMic(btn) {
+        if (!recognition) return;
+        if (isRecording) {
+            isRecording = false;
+            recognition.stop();
+            stopRecordingUI(btn);
+        } else {
+            isRecording = true;
+            recognition.start();
+            startRecordingUI(btn);
+        }
+    }
+
+    function startRecordingUI(btn) {
+        btn.classList.add('active');
+        btn.innerHTML = '<i class="fa-solid fa-square"></i>';
+    }
+
+    function stopRecordingUI(btn) {
+        if(!btn) btn = document.getElementById('micBtn');
+        btn.classList.remove('active');
+        btn.innerHTML = '<i class="fa-solid fa-microphone"></i>';
+    }
+
+    // --- MEDIA (CAMERA) ---
+    async function startMedia() {
+        try {
+            const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+            document.getElementById('webcamFeed').srcObject = stream;
+        } catch (err) {
+            console.error("Camera/Mic Error:", err);
+            // Don't alert here, just let the UI show state
+        }
+    }
+
+    // --- LOGIC ---
+    function loadQ() {
+      qTextEl.innerText = `"${currentMode.questions[currentIdx]}"`;
+      qNumEl.innerText = currentIdx + 1;
+      responseField.value = "";
+      timeLeft = 60;
+    }
+
+    // Timer
+    setInterval(() => {
+      if (timeLeft > 0) {
+        timeLeft--;
+        timerEl.innerText = `00:${timeLeft.toString().padStart(2, '0')}`;
+      }
+    }, 1000);
+
+    // Progression
+    nextBtn.onclick = () => {
+      if (isRecording) { 
+          isRecording = false; 
+          recognition.stop(); 
+          stopRecordingUI();
+      }
+      
+      if (currentIdx < currentMode.questions.length - 1) {
+        currentIdx++;
+        loadQ();
+      } else {
+        localStorage.setItem(mode === 'full' ? "full_mock_data" : "behavioral_analysis", JSON.stringify({
+          score: mode === 'full' ? 88 : 75,
+          comm: 82, conf: 80, tone: 85
+        }));
+        window.location.href = `interview-summary.html?mode=${mode}`;
+      }
+    };
+
+    // Init
+    startMedia();
+    loadQ();
+  </script>
 </body>
 </html>

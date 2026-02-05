@@ -50,4 +50,17 @@ document.addEventListener("DOMContentLoaded", () => {
       card.classList.add("show");
     }, index * 120);
   });
-});
+  });
+/* ===============================
+     SCROLL REVEAL (UPGRADED)
+  ================================ */
+  const observerOptions = { threshold: 0.1 };
+  const revealObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add("show");
+      }
+    });
+  }, observerOptions);
+
+  document.querySelectorAll(".reveal").forEach(el => revealObserver.observe(el));

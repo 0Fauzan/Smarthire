@@ -7,12 +7,10 @@
   <!-- META -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- GOOGLE FONTS -->
+  <!-- GOOGLE FONTS & ICONS -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Montserrat:wght@600;700;800&display=swap" rel="stylesheet">
-
-  <!-- FONT AWESOME -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
   <!-- MAIN CSS -->
@@ -37,43 +35,55 @@
         <i class="fa-solid fa-moon"></i>
       </button>
       <a href="login.html" class="nav-link">Login</a>
-      <a href="signup.html" class="btn">Get Started</a>
+      <!-- Changed from 'btn' to 'cta' class for better branding consistency -->
+      <a href="signup.html" class="cta" style="padding: 10px 20px; font-size: 14px;">Get Started</a>
     </div>
   </nav>
 
   <!-- HERO SECTION -->
   <section class="hero">
-    <h1>AI-Powered Interview & Hiring Platform</h1>
+    <!-- Centered and Clean Header -->
+    <h1 style="font-size: clamp(38px, 6vw, 60px); max-width: 900px; margin: 0 auto;">
+        AI-Powered Interview & Hiring Platform
+    </h1>
 
-    <p>
+    <p style="font-size: 18px; max-width: 650px; margin: 20px auto 40px auto;">
       Prepare, evaluate, and shortlist candidates using AI-driven interviews,
       confidence analysis, and communication scoring.
     </p>
 
-    <a href="signup.html" class="cta">Start Now</a>
+    <a href="signup.html" class="cta">Start Your Journey Now</a>
   </section>
 
-  <!-- FEATURES SECTION -->
-  <section class="features">
+  <!-- FEATURES SECTION (Fixed to a 2x2 Clean Grid) -->
+  <section class="features" style="max-width: 900px;">
 
+    <!-- Card 1: Core AI Questions -->
     <div class="card reveal">
       <i class="fa-solid fa-robot"></i>
-      <span>AI Interview Questions</span>
+      <span>AI Technical Interviews</span>
+      <small>MCQ, Coding Sessions, and immediate score reports.</small>
     </div>
 
+    <!-- Card 2: Confidence Analysis -->
     <div class="card reveal">
       <i class="fa-solid fa-video"></i>
-      <span>Video Confidence Analysis</span>
+      <span>Video Confidence Scoring</span>
+      <small>Analyze eye-contact, tone, and filler words.</small>
     </div>
 
-    <div class="card reveal">
-      <i class="fa-solid fa-language"></i>
-      <span>Language & Communication Assistant</span>
-    </div>
-
+    <!-- Card 3: HR Pipeline (For Recruiters) -->
     <div class="card reveal">
       <i class="fa-solid fa-users-gear"></i>
-      <span>HR Shortlisting Dashboard</span>
+      <span>ATS Integration & HR Dashboard</span>
+      <small>Shortlist candidates based on real-time performance data.</small>
+    </div>
+    
+    <!-- Card 4: Resume Optimization -->
+    <div class="card reveal">
+      <i class="fa-solid fa-wand-magic-sparkles"></i>
+      <span>AI Resume Builder</span>
+      <small>Generate an ATS-compliant resume and get keyword suggestions.</small>
     </div>
 
   </section>

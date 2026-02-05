@@ -4,92 +4,75 @@
   <meta charset="UTF-8">
   <title>SmartHire | Edit Profile</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <!-- Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Montserrat:wght@600;700;800&display=swap" rel="stylesheet">
-
-  <!-- Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-
-  <!-- Main CSS -->
   <link rel="stylesheet" href="css/style.css">
 </head>
 
 <body>
+  <div class="bg-effects"><span></span><span></span><span></span></div>
 
-  <!-- Background -->
-  <div class="bg-effects">
-    <span></span><span></span><span></span>
-  </div>
-
-  <!-- Navbar -->
   <nav class="navbar">
     <div class="logo">SmartHire</div>
     <div class="nav-actions">
-      <button id="themeToggle" class="theme-btn">
-        <i class="fa-solid fa-moon"></i>
-      </button>
-      <a href="profile.html" class="nav-link">Back</a>
+      <a href="profile.html" class="nav-link">Cancel</a>
     </div>
   </nav>
 
-  <!-- Hero -->
   <section class="hero dashboard">
     <h1>Edit Profile</h1>
-    <p>This information powers your resume & AI interview</p>
+    <p>Update your details for better AI recommendations</p>
   </section>
 
-  <!-- FORM -->
-  <section class="features">
-
+  <section class="features" style="display: block; max-width: 600px; margin: 0 auto;">
     <div class="signup-card">
-
+      
       <form id="profileForm">
-
+        
         <div class="form-group">
           <label>Full Name</label>
-          <input type="text" id="fullName" placeholder="Your name">
+          <input type="text" id="fullName" placeholder="e.g. John Doe" required>
         </div>
 
         <div class="form-group">
           <label>Current Role / Title</label>
-          <input type="text" id="role" placeholder="B.Tech CSE Student">
+          <input type="text" id="role" placeholder="e.g. Full Stack Developer">
         </div>
 
         <div class="form-group">
           <label>Education</label>
-          <input type="text" id="education" placeholder="B.Tech – Computer Science">
+          <input type="text" id="education" placeholder="e.g. B.Tech Computer Science">
         </div>
 
         <div class="form-group">
-          <label>Skills (comma separated)</label>
-          <input type="text" id="skills" placeholder="Python, C, Linux, Git">
+          <label>Technical Skills (Comma separated)</label>
+          <input type="text" id="skills" placeholder="Python, React, SQL, AWS">
         </div>
 
         <div class="form-group">
-          <label>Projects / Experience</label>
-          <input type="text" id="projects" placeholder="SmartHire, Portfolio Website">
+          <label>Key Projects</label>
+          <input type="text" id="projects" placeholder="e.g. E-Commerce App, Chatbot">
         </div>
 
-        <button type="submit">Save Profile</button>
+        <div class="form-group">
+          <label>Contact Email</label>
+          <input type="email" id="contactEmail" placeholder="your@email.com">
+        </div>
 
+        <button type="submit" class="cta" style="width: 100%; border: none;">Save Changes</button>
+      
       </form>
-
-      <p id="saveStatus" class="status"></p>
+      
+      <p id="saveStatus" style="text-align: center; margin-top: 15px; font-size: 13px; min-height: 20px;"></p>
 
     </div>
-
   </section>
 
-  <footer>
-    © 2026 SmartHire • Profile Editor
-  </footer>
+  <footer>© 2026 SmartHire • Profile System</footer>
 
-  <!-- Scripts -->
   <script src="js/ui.js"></script>
   <script src="js/auth-guard.js"></script>
+  
+  <!-- THE LOGIC SCRIPT -->
   <script src="js/profile.js"></script>
 
 </body>

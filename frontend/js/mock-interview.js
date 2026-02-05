@@ -126,5 +126,6 @@ document.addEventListener("DOMContentLoaded", () => {
   // INIT
   // -------------------------------
   loadQuestion();
+  
 
 });

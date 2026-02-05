@@ -2,110 +2,138 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>SmartHire | Interview Summary</title>
+  <title>SmartHire | Processing Results</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <!-- Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Montserrat:wght@600;700;800&display=swap" rel="stylesheet">
-
-  <!-- Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-
-  <!-- Main CSS -->
   <link rel="stylesheet" href="css/style.css">
+  <style>
+    .loading-container {
+      max-width: 600px;
+      margin: 100px auto;
+      text-align: center;
+      padding: 0 20px;
+    }
+
+    .ai-loader {
+      width: 100px;
+      height: 100px;
+      border: 5px solid rgba(255,255,255,0.1);
+      border-top: 5px solid var(--accent);
+      border-radius: 50%;
+      margin: 0 auto 30px;
+      animation: spin 1s linear infinite;
+      box-shadow: 0 0 30px rgba(111, 211, 255, 0.2);
+    }
+
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+    .status-list {
+      list-style: none;
+      margin-top: 40px;
+      text-align: left;
+      background: var(--glass);
+      padding: 30px;
+      border-radius: 20px;
+      border: 1px solid var(--border);
+    }
+
+    .status-item {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      margin-bottom: 15px;
+      font-size: 15px;
+      opacity: 0.5;
+      transition: all 0.4s ease;
+    }
+
+    .status-item.active {
+      opacity: 1;
+      color: var(--accent);
+      transform: translateX(10px);
+    }
+
+    .status-item i.fa-check-circle {
+      color: #4ade80; /* Success Green */
+    }
+
+    .progress-text {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 700;
+      font-size: 20px;
+      margin-bottom: 10px;
+    }
+  </style>
 </head>
 
 <body>
+  <div class="bg-effects"><span></span><span></span><span></span></div>
 
-<!-- Background -->
-<div class="bg-effects">
-  <span></span><span></span><span></span>
-</div>
+  <main class="loading-container">
+    <div class="ai-loader"></div>
+    
+    <div class="progress-text" id="mainStatus">Analyzing Performance...</div>
+    <p style="opacity: 0.7;">Our AI models are cross-referencing your results with industry benchmarks.</p>
 
-<!-- Navbar -->
-<nav class="navbar">
-  <div class="logo">SmartHire</div>
+    <ul class="status-list" id="statusList">
+      <li class="status-item" id="step1"><i class="fa-solid fa-circle-notch fa-spin"></i> Processing data inputs...</li>
+      <li class="status-item" id="step2"><i class="fa-solid fa-circle-notch fa-spin"></i> Evaluating logic & structure...</li>
+      <li class="status-item" id="step3"><i class="fa-solid fa-circle-notch fa-spin"></i> Generating scoring metrics...</li>
+      <li class="status-item" id="step4"><i class="fa-solid fa-circle-notch fa-spin"></i> Finalizing personalized feedback...</li>
+    </ul>
+  </main>
 
-  <div class="nav-actions">
-    <a href="candidate-dashboard.html" class="nav-link">Dashboard</a>
-  </div>
-</nav>
+  <script>
+    // 1. Define Steps based on Mode (Optional Polish)
+    const params = new URLSearchParams(window.location.search);
+    const mode = params.get("mode") || "technical";
 
-<!-- Hero -->
-<section class="hero dashboard">
-  <h1>Interview Summary</h1>
-  <p>Your mock interview performance overview</p>
-</section>
+    const steps = [
+      { id: 'step1', text: 'Processing session data...' },
+      { id: 'step2', text: 'Analyzing patterns & accuracy...' },
+      { id: 'step3', text: 'Calculating final score...' },
+      { id: 'step4', text: 'Generating insights report...' }
+    ];
 
-<!-- Summary Cards -->
-<section class="features">
+    if(mode === 'communication') {
+        steps[0].text = "Analyzing audio waveform...";
+        steps[1].text = "Calculating Words Per Minute (WPM)...";
+        steps[2].text = "Detecting filler words...";
+    }
 
-  <!-- Overall Score -->
-  <div class="card show">
-    <i class="fa-solid fa-chart-line"></i>
-    <span>Overall Score</span>
-    <small id="overallScore">78 / 100</small>
-  </div>
+    let currentStep = 0;
 
-  <!-- Strengths -->
-  <div class="card show">
-    <i class="fa-solid fa-thumbs-up"></i>
-    <span>Strengths</span>
-    <small id="strengths">
-      Communication, Confidence
-    </small>
-  </div>
+    function processSteps() {
+      if (currentStep < steps.length) {
+        const item = document.getElementById(steps[currentStep].id);
+        
+        // Mark previous as done
+        if (currentStep > 0) {
+          const prevItem = document.getElementById(steps[currentStep - 1].id);
+          prevItem.innerHTML = `<i class="fa-solid fa-check-circle"></i> ${steps[currentStep - 1].text}`;
+          prevItem.classList.remove('active');
+        }
 
-  <!-- Improvements -->
-  <div class="card show">
-    <i class="fa-solid fa-wrench"></i>
-    <span>Needs Improvement</span>
-    <small id="improvements">
-      Technical depth, Examples
-    </small>
-  </div>
+        // Activate current
+        item.classList.add('active');
+        item.innerHTML = `<i class="fa-solid fa-circle-notch fa-spin"></i> ${steps[currentStep].text}`;
+        
+        currentStep++;
+        setTimeout(processSteps, 1200); // Speed of animation
+      } else {
+        // Finish
+        const lastItem = document.getElementById(steps[steps.length - 1].id);
+        lastItem.innerHTML = `<i class="fa-solid fa-check-circle"></i> ${steps[steps.length - 1].text}`;
+        document.getElementById('mainStatus').innerText = "Analysis Complete!";
+        
+        // 🛑 CRITICAL: REDIRECT WITH MODE
+        setTimeout(() => {
+          window.location.href = `candidate-insights.html?mode=${mode}`;
+        }, 800);
+      }
+    }
 
-  <!-- Readiness -->
-  <div class="card show">
-    <i class="fa-solid fa-briefcase"></i>
-    <span>Job Readiness</span>
-    <small id="readiness">
-      Almost Ready
-    </small>
-  </div>
-
-</section>
-
-<!-- Action Section -->
-<section class="features">
-
-  <div class="card show">
-    <i class="fa-solid fa-file"></i>
-    <span>Improve Resume</span>
-    <small>Boost ATS score</small>
-  </div>
-
-  <div class="card show">
-    <i class="fa-solid fa-microphone"></i>
-    <span>Practice Interview</span>
-    <small>Try another round</small>
-  </div>
-
-  <div class="card show">
-    <i class="fa-solid fa-robot"></i>
-    <span>AI Feedback</span>
-    <small>Coming Soon</small>
-  </div>
-  
-
-</section>
-
-<footer>
-  © 2026 SmartHire • Interview Summary
-</footer>
-
-<script src="js/interview-summary.js"></script>
+    document.addEventListener('DOMContentLoaded', processSteps);
+  </script>
 </body>
 </html>

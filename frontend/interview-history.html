@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>SmartHire | Interview History</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <!-- Fonts & Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="css/style.css">
+
+  <style>
+    /* HISTORY SPECIFIC STYLES */
+    .history-container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 20px;
+      min-height: 60vh;
+    }
+
+    /* Filters */
+    .filter-bar {
+      display: flex;
+      gap: 15px;
+      margin-bottom: 25px;
+      flex-wrap: wrap;
+    }
+
+    .filter-btn {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 8px 16px;
+      border-radius: 20px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-size: 13px;
+    }
+
+    .filter-btn.active, .filter-btn:hover {
+      background: var(--accent);
+      color: #000;
+      border-color: var(--accent);
+      font-weight: 600;
+    }
+
+    /* Table Design */
+    .history-card {
+      background: var(--glass);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      overflow: hidden;
+      backdrop-filter: blur(10px);
+    }
+
+    .history-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+    }
+
+    .history-table th {
+      background: rgba(0, 0, 0, 0.2);
+      padding: 18px;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: rgba(255, 255, 255, 0.7);
+    }
+
+    .history-table td {
+      padding: 20px 18px;
+      border-bottom: 1px solid var(--border);
+      font-size: 14px;
+    }
+
+    .history-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .history-table tr:hover {
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    /* Type Badges */
+    .type-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 600;
+    }
+    
+    .type-tech { color: #6fd3ff; }
+    .type-hr { color: #a855f7; }
+    .type-resume { color: #4ade80; }
+    .type-comm { color: #facc15; }
+
+    /* Action Button */
+    .view-btn {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 12px;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .view-btn:hover {
+      background: var(--text);
+      color: var(--bg1);
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 50px;
+      opacity: 0.6;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="bg-effects"><span></span><span></span><span></span></div>
+
+  <nav class="navbar">
+    <div class="logo">SmartHire</div>
+    <div class="nav-actions">
+      <a href="candidate-interview.html" class="nav-link">Back</a>
+      <div class="profile-menu">
+        <i class="fa-solid fa-user-circle"></i>
+        <div class="profile-dropdown">
+            <a href="candidate-dashboard.html">Dashboard</a>
+            <a href="profile.html">Profile</a>
+            <a href="login.html">Logout</a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <section class="hero dashboard">
+    <h1>Interview History</h1>
+    <p>Track your progress and review past performance reports.</p>
+  </section>
+
+  <main class="history-container">
+    
+    <!-- Filter Tabs -->
+    <div class="filter-bar">
+      <button class="filter-btn active" onclick="filterTable('all', this)">All Sessions</button>
+      <button class="filter-btn" onclick="filterTable('technical', this)">Technical</button>
+      <button class="filter-btn" onclick="filterTable('behavioral', this)">Behavioral</button>
+      <button class="filter-btn" onclick="filterTable('resume', this)">Resume Analysis</button>
+    </div>
+
+    <!-- Results Table -->
+    <div class="history-card">
+      <table class="history-table">
+        <thead>
+          <tr>
+            <th>Session Type</th>
+            <th>Date</th>
+            <th>Score</th>
+            <th>Status</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="historyBody">
+          <!-- Rows will be injected by JS -->
+        </tbody>
+      </table>
+      <div id="emptyState" class="empty-state" style="display: none;">
+        <i class="fa-solid fa-folder-open" style="font-size: 30px; margin-bottom: 10px;"></i>
+        <p>Loading History...</p>
+      </div>
+    </div>
+
+    <!-- Clear History Utility -->
+    <div style="text-align: center; margin-top: 30px;">
+        <button onclick="clearHistory()" style="background:none; border:none; color:#ff6b6b; cursor:pointer; font-size: 12px; text-decoration: underline;">Clear All History</button>
+    </div>
+
+  </main>
+
+  <footer>© 2026 SmartHire • History & Analytics</footer>
+
+  <script src="js/ui.js"></script>
+  <script src="js/auth-guard.js"></script>
+  <script>
+    (function() { // 🛑 CRITICAL FIX: IIFE to encapsulate the scope
+        
+        // --- MAPPING HELPER ---
+        const typeMap = { 
+            'Technical Interview': { type: 'Technical', sub: 'Coding & MCQ', mode: 'technical', icon: 'fa-code', style: 'type-tech' },
+            'Behavioral': { type: 'Behavioral', sub: 'HR Mock', mode: 'behavioral', icon: 'fa-user-tie', style: 'type-hr' },
+            'Communication': { type: 'Fluency', sub: 'Speech Analysis', mode: 'communication', icon: 'fa-microphone', style: 'type-comm' },
+            'Resume': { type: 'Resume', sub: 'ATS Scan', mode: 'resume', icon: 'fa-file-lines', style: 'type-resume' },
+            'Company Prep': { type: 'Technical', sub: 'Company Prep', mode: 'technical', icon: 'fa-building', style: 'type-tech' }
+        };
+
+        // --- MAIN FETCH FUNCTION ---
+        async function loadHistory() {
+            const tbody = document.getElementById("historyBody");
+            const emptyState = document.getElementById("emptyState");
+            const token = localStorage.getItem("smarthire_token");
+            tbody.innerHTML = '';
+
+            if (!token) {
+                emptyState.innerHTML = '<p>Session Expired. Please log in to view history.</p>';
+                emptyState.style.display = 'block';
+                return;
+            }
+            
+            try {
+                const response = await fetch('http://127.0.0.1:5000/api/interview/history', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                
+                if (response.status === 401) { throw new Error("Unauthorized"); }
+                
+                const historyData = await response.json();
+                
+                if (historyData.length === 0) {
+                    emptyState.innerHTML = '<p>No interview history found.</p>';
+                    emptyState.style.display = 'block';
+                    return;
+                }
+
+                // 3. Render Rows from Database
+                historyData.forEach(item => {
+                    const map = typeMap[item.type] || { type: item.type, sub: item.language || 'N/A', mode: item.type.toLowerCase(), icon: 'fa-square-poll-vertical', style: 'type-tech' };
+
+                    const row = document.createElement("tr");
+                    row.className = `history-row ${map.mode}`; // For filtering
+                    
+                    // Determine Status Badge
+                    let statusBadge = "";
+                    if (item.score >= 80) statusBadge = '<span class="status-badge pass">Excellent</span>';
+                    else if (item.score >= 60) statusBadge = '<span class="status-badge" style="background:rgba(250, 204, 21, 0.2); color:#facc15;">Average</span>';
+                    else statusBadge = '<span class="status-badge fail">Needs Improvement</span>';
+
+                    row.innerHTML = `
+                        <td>
+                            <div class="type-badge ${map.style}">
+                                <i class="fa-solid ${map.icon}"></i>
+                                <div>
+                                    <span>${map.type}</span>
+                                    <div style="font-size:11px; opacity:0.6; font-weight:400;">${map.sub}</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>${item.date}</td>
+                        <td style="font-weight:700;">${item.score}%</td>
+                        <td>${statusBadge}</td>
+                        <td>
+                            <a href="candidate-insights.html?mode=${map.mode.toLowerCase()}" class="view-btn">View Report</a>
+                        </td>
+                    `;
+                    tbody.appendChild(row);
+                });
+
+            } catch (error) {
+                console.error("Error loading history:", error);
+                const message = (error.message === "Unauthorized") ? "Session Expired. Please log in again." : "Could not connect to the server to load history.";
+                
+                emptyState.innerHTML = `<p style="color:red;">${message}</p>`;
+                emptyState.style.display = 'block';
+            }
+        }
+
+        // --- FILTER LOGIC ---
+        function filterTable(category, el) {
+            // Highlight active button
+            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+            el.classList.add('active');
+
+            const rows = document.querySelectorAll('.history-row');
+            rows.forEach(row => {
+                const rowCategory = row.className.replace('history-row ', '').trim();
+                if (category === 'all' || rowCategory === category) {
+                    row.style.display = "table-row";
+                } else {
+                    row.style.display = "none";
+                }
+            });
+        }
+
+        // --- CLEAR HISTORY (Now a frontend clear) ---
+        function clearHistory() {
+            if(confirm("Are you sure you want to clear your local interview history?")) {
+                // In a real app, you would send a DELETE request to the backend here
+                localStorage.clear();
+                alert("History cleared.");
+                window.location.reload();
+            }
+        }
+        
+        // Init Load
+        document.addEventListener("DOMContentLoaded", () => {
+            // Fix for the initial 'Loading History' text
+            document.getElementById("emptyState").style.display = 'block';
+            loadHistory();
+        });
+    })();
+  </script>
+</body>
+</html>

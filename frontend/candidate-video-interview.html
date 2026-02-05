@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>SmartHire | AI Video Interview</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    /* =========================================
+       VIDEO INTERVIEW LAYOUT
+    ========================================= */
+    .video-stage-layout {
+      display: grid;
+      grid-template-columns: 1.5fr 1fr; /* Video takes more space */
+      gap: 30px;
+      max-width: 1300px;
+      margin: 30px auto;
+      padding: 0 30px;
+      align-items: start;
+    }
+
+    /* 1. Webcam Container */
+    .webcam-container {
+      background: #000;
+      border-radius: 20px;
+      aspect-ratio: 16/9;
+      position: relative;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.2);
+      box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+    }
+
+    #webcamFeed {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transform: scaleX(-1);
+    }
+
+    .recording-indicator {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(0,0,0,0.7);
+      padding: 6px 14px;
+      border-radius: 30px;
+      color: #ff6b6b;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      opacity: 0; /* Hidden by default */
+      transition: opacity 0.3s;
+      border: 1px solid rgba(255,107,107,0.3);
+    }
+
+    .recording-indicator.active { opacity: 1; animation: pulseRed 2s infinite; }
+
+    @keyframes pulseRed { 0% { box-shadow: 0 0 0 0 rgba(255, 107, 107, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(255, 107, 107, 0); } 100% { box-shadow: 0 0 0 0 rgba(255, 107, 107, 0); } }
+
+    /* 2. AI Side Panel */
+    .ai-side-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .prompt-card {
+      background: rgba(18, 25, 38, 0.85);
+      backdrop-filter: blur(15px);
+      padding: 25px;
+      border-radius: 18px;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+
+    .prompt-card h3 {
+        font-size: 18px;
+        line-height: 1.5;
+        margin-top: 10px;
+        color: white;
+    }
+
+    /* Live Transcript Box (New) */
+    .transcript-box {
+      background: rgba(0,0,0,0.3);
+      border-radius: 10px;
+      padding: 15px;
+      height: 120px;
+      overflow-y: auto;
+      font-size: 13px;
+      color: rgba(255,255,255,0.8);
+      border: 1px solid rgba(255,255,255,0.1);
+      margin-top: 15px;
+      font-style: italic;
+    }
+
+    /* Confidence Meter */
+    .confidence-track {
+      height: 12px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 10px;
+      margin-top: 15px;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .confidence-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #4ade80, #22c55e);
+      transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .action-row {
+      display: flex;
+      gap: 15px;
+      margin-top: auto;
+    }
+
+    #startBtn {
+        flex: 1;
+        background: var(--accent);
+        color: white;
+        border: none;
+        padding: 12px;
+        border-radius: 10px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: 0.2s;
+    }
+    #startBtn:hover { transform: translateY(-2px); }
+
+    @media (max-width: 950px) {
+      .video-stage-layout { grid-template-columns: 1fr; max-width: 700px; }
+      .webcam-container { aspect-ratio: 4/3; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="bg-effects"><span></span><span></span><span></span></div>
+
+  <nav class="navbar">
+    <div class="logo">SmartHire</div>
+    <div class="nav-actions">
+      <a href="candidate-dashboard.html" class="nav-link">Exit</a>
+      <button id="themeToggle" class="theme-btn"><i class="fa-solid fa-moon"></i></button>
+    </div>
+  </nav>
+
+  <section class="hero dashboard" style="padding-top: 40px; padding-bottom: 20px;">
+    <h1>Video Interview</h1>
+    <p>AI is analyzing your confidence, tone, and eye contact.</p>
+  </section>
+
+  <main class="video-stage-layout">
+    
+    <!-- LEFT: CAMERA -->
+    <div class="webcam-container">
+      <video id="webcamFeed" autoplay playsinline muted></video>
+      <div class="recording-indicator" id="recStatus">
+        <i class="fa-solid fa-circle" style="font-size: 8px;"></i> REC & LISTEN
+      </div>
+      
+      <!-- Error Overlay -->
+      <div id="camError" style="display: none; position: absolute; inset: 0; background: #222; align-items: center; justify-content: center; flex-direction: column; color: #ff6b6b; padding: 20px; text-align: center;">
+        <i class="fa-solid fa-video-slash" style="font-size: 40px; margin-bottom: 15px;"></i>
+        <p>Media access denied.<br>Please allow Camera & Mic permissions.</p>
+      </div>
+    </div>
+
+    <!-- RIGHT: AI FEEDBACK -->
+    <div class="ai-side-panel">
+      
+      <div class="prompt-card">
+        <small style="text-transform: uppercase; opacity: 0.6; letter-spacing: 1px; font-size: 11px; font-weight: 700;">Current Question</small>
+        <h3 id="currentQuestion">"Tell us about a time you solved a complex technical problem."</h3>
+      </div>
+
+      <div class="prompt-card">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <span style="font-weight: 600;">Live Confidence Score</span>
+            <span id="confValue" style="color: #4ade80; font-weight: 700;">--</span>
+        </div>
+        
+        <div class="confidence-track">
+          <div id="confidenceFill" class="confidence-fill"></div>
+        </div>
+        
+        <!-- NEW: Live Transcript Box -->
+        <div class="transcript-box" id="transcriptBox">
+            <em>(Speak clearly... AI transcript will appear here)</em>
+        </div>
+
+        <div style="background: rgba(255,255,255,0.05); padding: 12px; border-radius: 8px; margin-top: 15px; border-left: 3px solid var(--accent);">
+            <small id="aiTip" style="font-size: 13px; font-style: italic; opacity: 0.9;">AI: Waiting to start...</small>
+        </div>
+      </div>
+
+      <div class="action-row">
+        <button id="startBtn" class="cta">Start Session</button>
+      </div>
+
+    </div>
+  </main>
+
+  <script src="js/ui.js"></script>
+  <script>
+    const video = document.getElementById('webcamFeed');
+    const startBtn = document.getElementById('startBtn');
+    const recStatus = document.getElementById('recStatus');
+    const confFill = document.getElementById('confidenceFill');
+    const confValue = document.getElementById('confValue');
+    const aiTip = document.getElementById('aiTip');
+    const camError = document.getElementById('camError');
+    const transcriptBox = document.getElementById('transcriptBox');
+
+    let analysisInterval = null;
+    
+    // --- SPEECH RECOGNITION SETUP ---
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    let recognition = null;
+    let isRecording = false;
+
+    if (SpeechRecognition) {
+        recognition = new SpeechRecognition();
+        recognition.continuous = true;
+        recognition.interimResults = true;
+        recognition.lang = 'en-US';
+
+        recognition.onstart = () => {
+            console.log("Mic listening...");
+        };
+
+        recognition.onresult = (event) => {
+            let interimTranscript = '';
+            let finalTranscript = '';
+
+            for (let i = event.resultIndex; i < event.results.length; ++i) {
+                if (event.results[i].isFinal) {
+                    finalTranscript += event.results[i][0].transcript;
+                } else {
+                    interimTranscript += event.results[i][0].transcript;
+                }
+            }
+            
+            // Show transcript in real-time
+            if (finalTranscript || interimTranscript) {
+                transcriptBox.innerHTML = `<span style="color:white">${finalTranscript}</span> <span style="color:#aaa">${interimTranscript}</span>`;
+                transcriptBox.scrollTop = transcriptBox.scrollHeight;
+                
+                // If user is speaking, boost confidence score visually
+                aiTip.innerText = "AI: Voice detected. Tone is confident.";
+            }
+        };
+
+        recognition.onerror = (event) => {
+            console.error("Speech Error:", event.error);
+            if (event.error === 'not-allowed') {
+                aiTip.innerText = "AI: Microphone access blocked.";
+            }
+        };
+    } else {
+        transcriptBox.innerText = "Browser does not support Speech-to-Text. Use Chrome.";
+    }
+
+    // --- 1. INITIALIZE CAMERA & MIC ---
+    async function initCamera() {
+      try {
+        // 🛑 CRITICAL FIX: REQUEST AUDIO: TRUE
+        const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+        video.srcObject = stream;
+        video.muted = true; // Mute playback to prevent echo
+        camError.style.display = 'none';
+        aiTip.innerText = "AI: Sensors connected. Ready.";
+      } catch (err) {
+        console.error("Media Error:", err);
+        camError.style.display = 'flex';
+        aiTip.innerText = "AI: Error connecting to media.";
+      }
+    }
+
+    // --- 2. START/STOP LOGIC ---
+    startBtn.addEventListener('click', () => {
+      if(startBtn.innerText === "Start Session") {
+        // START
+        startBtn.innerText = "Stop & Submit";
+        startBtn.style.background = "#ff6b6b"; 
+        recStatus.classList.add('active');
+        
+        // Start Speech Recognition
+        if (recognition) {
+            recognition.start();
+            isRecording = true;
+            transcriptBox.innerText = ""; // Clear previous
+        }
+
+        // Start Visual Simulation
+        startAnalysis();
+
+      } else {
+        // STOP
+        clearInterval(analysisInterval);
+        recStatus.classList.remove('active');
+        
+        if (recognition && isRecording) {
+            recognition.stop();
+            isRecording = false;
+        }
+        
+        // Save Result
+        localStorage.setItem("comm_analysis_data", JSON.stringify({
+            score: 92,
+            pace: 135,
+            fillers: 2,
+            energy: 85,
+            clarity: 90
+        }));
+        
+        alert("Session Recorded! Generating report...");
+        window.location.href = "candidate-insights.html?mode=communication"; 
+      }
+    });
+
+    // --- 3. CONFIDENCE SIMULATION ---
+    function startAnalysis() {
+      aiTip.innerText = "AI: Analyzing facial expressions...";
+      
+      analysisInterval = setInterval(() => {
+        const mockConfidence = Math.floor(Math.random() * (99 - 80 + 1)) + 80;
+        confFill.style.width = mockConfidence + "%";
+        confValue.innerText = mockConfidence + "%";
+      }, 2000);
+    }
+
+    window.onload = initCamera;
+  </script>
+</body>
+</html>

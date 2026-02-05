@@ -1,33 +1,29 @@
-# services/interview_evaluator.py (CREATE THIS FILE)
-import os
-import json
-from anthropic import Anthropic
+from typing import Dict, List
+from services.ai_service import SmartHireAI
+
 
 class InterviewEvaluator:
     """
-    Evaluates interview answers using AI
-    Provides detailed feedback and scoring
+    Interview answer evaluation using unified AI
     """
-    
+
     def __init__(self):
-        api_key = os.getenv("ANTHROPIC_API_KEY", "")
-        if not api_key:
-            raise Exception("ANTHROPIC_API_KEY required for interview evaluation")
-        
-        self.client = Anthropic(api_key=api_key)
-    
-    def evaluate_answer(self, question_text, answer_text, interview_type='hr'):
+        self.ai = SmartHireAI()
+
+    def evaluate_answer(
+        self,
+        question_text: str,
+        answer_text: str,
+        interview_type: str = "hr",
+    ) -> Dict:
         """
-        Evaluate a single answer
-        Returns: {score, strengths, improvements, model_answer, star_components}
+        Evaluate single answer via unified AI service.
         """
-        
-        if interview_type == 'hr':
-            return self._evaluate_behavioral_answer(question_text, answer_text)
-        elif interview_type == 'technical':
-            return self._evaluate_technical_answer(question_text, answer_text)
-        else:  # ai_mock
-            return self._evaluate_general_answer(question_text, answer_text)
+        return self.ai.evaluate_answer(
+            question_text=question_text,
+            answer_text=answer_text,
+            interview_type=interview_type,
+        )
     
     def _evaluate_behavioral_answer(self, question, answer):
         """
@@ -223,26 +219,26 @@ Provide JSON feedback:
             }
         }
     
-    def generate_overall_feedback(self, questions, overall_score):
+    def generate_overall_feedback(self, questions: List, overall_score: int) -> Dict:
         """
-        Generate summary feedback for entire interview
+        Generate summary feedback for entire interview.
+        This stays local (no extra AI calls) and looks at per‑question scores.
         """
-        # Analyze patterns across all answers
+        # Analyze patterns
         low_scoring = [q for q in questions if q.score and q.score < 70]
         high_scoring = [q for q in questions if q.score and q.score >= 85]
-        
+
         # Identify weak areas
         weak_areas = []
         for q in low_scoring:
             if q.ai_evaluation:
-                eval_data = q.ai_evaluation
-                star = eval_data.get('star_components', {})
-                if not star.get('result'):
-                    weak_areas.append('result_oriented_answers')
-                if not star.get('situation'):
-                    weak_areas.append('context_setting')
-        
-        # Generate feedback
+                star = q.ai_evaluation.get("star_components", {})
+                if not star.get("result"):
+                    weak_areas.append("result_oriented_answers")
+                if not star.get("situation"):
+                    weak_areas.append("context_setting")
+
+        # Overall assessment
         if overall_score >= 85:
             assessment = "Excellent performance! You're interview-ready."
             readiness = "interview_ready"
@@ -252,28 +248,34 @@ Provide JSON feedback:
         else:
             assessment = "Needs more practice before live interviews."
             readiness = "needs_practice"
-        
-        strengths = []
-        improvements = []
-        
+
+        strengths: List[str] = []
+        improvements: List[str] = []
+
         if len(high_scoring) > len(low_scoring):
-            strengths.append("Consistently strong answers")
-        
-        if 'result_oriented_answers' in weak_areas:
-            improvements.append("Add measurable results and outcomes to your answers")
-        
-        if 'context_setting' in weak_areas:
-            improvements.append("Provide more context at the beginning of your answers")
-        
+            strengths.append("Consistently strong answers across multiple questions.")
+
+        if "result_oriented_answers" in weak_areas:
+            improvements.append(
+                "Add measurable results and clear outcomes to your answers."
+            )
+
+        if "context_setting" in weak_areas:
+            improvements.append(
+                "Set the scene more clearly at the start of each answer (who, what, when, where)."
+            )
+
         if not improvements:
-            improvements.append("Continue practicing to maintain consistency")
-        
+            improvements.append(
+                "Keep practicing to maintain and further improve consistency."
+            )
+
         return {
             "overall_assessment": assessment,
             "readiness_level": readiness,
-            "strengths": strengths or ["Answer quality was adequate"],
+            "strengths": strengths or ["Answer quality was adequate."],
             "improvements": improvements,
             "weak_areas": list(set(weak_areas)),
             "questions_mastered": len(high_scoring),
-            "questions_need_work": len(low_scoring)
+            "questions_need_work": len(low_scoring),
         }

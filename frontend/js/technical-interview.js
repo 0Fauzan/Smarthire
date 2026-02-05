@@ -1,246 +1,218 @@
-// ===============================
-// TECHNICAL INTERVIEW – FINAL VERSION
-// ===============================
+// ======================================================
+// TECHNICAL-INTERVIEW.JS – FINAL STABLE VERSION
+// ======================================================
 
 document.addEventListener("DOMContentLoaded", () => {
-
-  // -------------------------------
-  // DOM ELEMENTS
-  // -------------------------------
   const questionText = document.getElementById("questionText");
   const optionsBox = document.getElementById("optionsBox");
+  const editorContainer = document.getElementById("editorContainer");
   const nextBtn = document.getElementById("nextBtn");
   const timerEl = document.getElementById("timer");
+  const langBadge = document.getElementById("languageBadge");
+  const progressFill = document.getElementById("progressFill");
 
-  // -------------------------------
-  // LANGUAGE SELECTION
-  // -------------------------------
+  // --- INTERVIEW STATE ---
   const params = new URLSearchParams(window.location.search);
-  const selectedLanguage = params.get("lang") || "c";
-
-  console.log("Technical Interview Language:", selectedLanguage);
-
-  // -------------------------------
-  // STATE
-  // -------------------------------
+  const companyParam = params.get("company");
+  const langParam = params.get("lang");
+  const selectedLanguage = (companyParam ? "python" : (langParam || "python")).toLowerCase();
+  
   let currentIndex = 0;
   let selectedAnswer = null;
-  let timer = null;
-  let timeLeft = 60;
+  let timerInterval = null;
+  let timeLeft = 0;
 
-  let correctAnswers = 0;
-  let answerLog = [];
-  let timeTakenLog = [];
+  // --- QUESTION POOLS ---
+  const langPool = {
+    python: [{ type: "mcq", q: "Immutable data type?", o: ["List", "Tuple", "Set"], a: "Tuple" }, { type: "coding", q: "Write a function to return the nth Fibonacci number.", c: "def fibonacci(n):\n    # Write your code here\n    pass" }],
+    java: [{ type: "mcq", q: "Keyword to prevent override?", o: ["static", "final", "abstract"], a: "final" }, { type: "coding", q: "Check if a string is a palindrome.", c: "public boolean isPalindrome(String s) {\n    // Code here\n}" }],
+    javascript: [{ type: "mcq", q: "Output of 'typeof NaN'?", o: ["number", "string", "undefined"], a: "number" }, { type: "coding", q: "Write a function to deep-clone an object.", c: "function deepClone(obj) {\n    // Code here\n}" }],
+    c: [{ type: "mcq", q: "Correct way to declare a pointer?", o: ["int p*;", "int *p;", "pointer p;"], a: "int *p;" }, { type: "coding", q: "Reverse a linked list.", c: "struct Node* reverse(struct Node* head) {\n    // Code here\n}" }],
+    cpp: [{ type: "mcq", q: "Method implementation in subclass?", o: ["Overloading", "Overriding", "Abstraction"], a: "Overriding" }, { type: "coding", q: "Implement a Stack class.", c: "class Stack {\npublic:\n    // Code here\n};" }],
+    sql: [{ type: "mcq", q: "Clause to filter aggregate functions?", o: ["WHERE", "HAVING", "GROUP BY"], a: "HAVING" }, { type: "coding", q: "Find second highest salary.", c: "-- SQL Query here\nSELECT..." }]
+  };
 
-  // -------------------------------
-  // QUESTION BANK (SAMPLE – EXPANDABLE)
-  // -------------------------------
-  const questions = [
-    {
-      question: "What is the time complexity of binary search?",
-      options: ["O(n)", "O(log n)", "O(n log n)", "O(1)"],
-      answer: "O(log n)"
+  // Assign questions based on logic
+  let questions = (langPool[selectedLanguage] || langPool["python"]).map(item => ({
+      type: item.type,
+      question: item.q,
+      options: item.o,
+      correct: item.a,
+      starterCode: item.c
+  }));
+
+  // --- ACE EDITOR ---
+  let editor;
+  if (editorContainer) {
+    editor = ace.edit("editorContainer");
+    editor.setTheme("ace/theme/monokai");
+    const aceModeMap = { 'cpp': 'c_cpp', 'c': 'c_cpp', 'javascript': 'javascript', 'python': 'python', 'java': 'java', 'sql': 'sql' };
+    editor.session.setMode(`ace/mode/${aceModeMap[selectedLanguage] || 'python'}`);
+    editor.setFontSize(14);
+    editor.setShowPrintMargin(false);
+  }
+
+  // --- DATA STORAGE ---
+  const reviewData = {
+    meta: { 
+        type: companyParam ? "Company Prep" : "Technical Interview", 
+        language: selectedLanguage, 
+        date: new Date().toLocaleDateString() 
     },
-    {
-      question: "Which data structure follows FIFO?",
-      options: ["Stack", "Queue", "Tree", "Graph"],
-      answer: "Queue"
-    },
-    {
-      question: "Which keyword is used to define a constant in C?",
-      options: ["static", "final", "const", "define"],
-      answer: "const"
-    }
-  ];
+    results: []
+  };
 
-  // -------------------------------
-  // TIMER FUNCTIONS
-  // -------------------------------
+  // --- ENGINE FUNCTIONS ---
   function startTimer() {
-    clearInterval(timer);
-    timeLeft = 60;
+    clearInterval(timerInterval);
+    timeLeft = questions[currentIndex].type === 'coding' ? 300 : 60;
     updateTimerUI();
-
-    timer = setInterval(() => {
+    timerInterval = setInterval(() => {
       timeLeft--;
       updateTimerUI();
-
-      if (timeLeft <= 0) {
-        clearInterval(timer);
-        autoNext();
-      }
+      if (timeLeft <= 0) { clearInterval(timerInterval); saveAndNext(); }
     }, 1000);
   }
 
   function updateTimerUI() {
     if (timerEl) {
-      timerEl.innerText = `⏱️ Time left: ${timeLeft}s`;
+      const mins = Math.floor(timeLeft / 60);
+      const secs = timeLeft % 60;
+      timerEl.innerText = `⏱️ ${mins}:${secs.toString().padStart(2, '0')}`;
     }
   }
 
-  // -------------------------------
-  // LOAD QUESTION
-  // -------------------------------
   function loadQuestion() {
     selectedAnswer = null;
-    optionsBox.innerHTML = "";
-
     const q = questions[currentIndex];
+    
+    // Update Badge
+    if (langBadge) langBadge.innerText = (companyParam || selectedLanguage).toUpperCase() + " SESSION";
     questionText.innerText = q.question;
 
-    q.options.forEach(option => {
-      const label = document.createElement("label");
-      label.innerHTML = `
-        <input type="radio" name="option" value="${option}">
-        ${option}
-      `;
-      label.addEventListener("click", () => {
-        selectedAnswer = option;
+    // Update Progress
+    if (progressFill) {
+      const percent = ((currentIndex + 1) / questions.length) * 100;
+      progressFill.style.width = percent + "%";
+    }
+
+    // Toggle View
+    if (q.type === "mcq") {
+      optionsBox.style.display = "grid";
+      editorContainer.style.display = "none";
+      optionsBox.innerHTML = "";
+      q.options.forEach(option => {
+        const label = document.createElement("label");
+        label.className = "option-label";
+        label.innerHTML = `<input type="radio" name="opt" value="${option}"> ${option}`;
+        label.onclick = () => {
+          selectedAnswer = option;
+          document.querySelectorAll('.option-label').forEach(l => l.classList.remove('active'));
+          label.classList.add('active');
+        };
+        optionsBox.appendChild(label);
       });
-      optionsBox.appendChild(label);
-    });
+    } else {
+      optionsBox.style.display = "none";
+      editorContainer.style.display = "block";
+      editor.setValue(q.starterCode, -1);
+      editor.focus();
+    }
+
+    if (currentIndex === questions.length - 1) {
+      nextBtn.innerHTML = `Finish Session <i class="fa-solid fa-check" style="margin-left:8px;"></i>`;
+    }
 
     startTimer();
   }
 
-  // -------------------------------
-  // ANSWER CHECK
-  // -------------------------------
-  function checkAnswer() {
+  function saveAndNext() {
     const q = questions[currentIndex];
-    const isCorrect = selectedAnswer === q.answer;
-
-    answerLog.push({
+    let userResponse = q.type === 'mcq' ? selectedAnswer : editor.getValue();
+    
+    reviewData.results.push({
       question: q.question,
-      selected: selectedAnswer,
-      correct: q.answer,
-      isCorrect: isCorrect
+      type: q.type,
+      correct: q.correct,
+      user: userResponse || "No Answer",
+      isCorrect: q.type === 'mcq' ? (userResponse === q.correct) : "Pending Review",
+      timeTaken: (q.type === 'coding' ? 300 : 60) - timeLeft
     });
 
-    timeTakenLog.push(60 - timeLeft);
-
-    if (isCorrect) {
-      correctAnswers++;
-    }
-  }
-
-  // -------------------------------
-  // AUTO NEXT (TIMEOUT)
-  // -------------------------------
-  function autoNext() {
-    checkAnswer();
     currentIndex++;
-
     if (currentIndex >= questions.length) {
-      showCompletion();
+      finishInterview();
     } else {
       loadQuestion();
     }
   }
 
-  // -------------------------------
-  // MANUAL NEXT
-  // -------------------------------
+  // --- 🛑 THE CRITICAL FIX FOR THE HANGING BUTTON ---
+  async function finishInterview() {
+    clearInterval(timerInterval);
+    const token = localStorage.getItem("smarthire_token");
+
+    if (!token) {
+        alert("Session expired. Please log in again.");
+        window.location.href = "login.html";
+        return;
+    }
+
+    nextBtn.innerText = "Saving...";
+    nextBtn.disabled = true;
+
+    const correctCount = reviewData.results.filter(r => r.isCorrect === true).length;
+    const totalQuestions = reviewData.results.length;
+    const finalScore = totalQuestions > 0 ? Math.round((correctCount / totalQuestions) * 100) : 0;
+
+    const payload = {
+      type: reviewData.meta.type,
+      language: reviewData.meta.language,
+      score: finalScore,
+      results: reviewData.results,
+      date: reviewData.meta.date
+    };
+
+    try {
+      console.log("Saving to backend...");
+      const response = await fetch('http://127.0.0.1:5000/api/interview/save', {
+        method: 'POST',
+        headers: { 
+            'Content-Type': 'application/json', 
+            'Authorization': `Bearer ${token}` 
+        },
+        body: JSON.stringify(payload)
+      });
+
+      if (response.ok) {
+        localStorage.setItem("interviewReview", JSON.stringify(reviewData));
+        window.location.href = "interview-summary.html";
+      } else {
+        const err = await response.json();
+        console.error("Server Error:", err);
+        alert("Error: " + (err.msg || "Could not save session"));
+        resetButton();
+      }
+    } catch (error) {
+      console.error("Network Error:", error);
+      alert("Network error: Is the Python server running?");
+      resetButton();
+    }
+  }
+
+  function resetButton() {
+    nextBtn.innerText = "Try Again";
+    nextBtn.disabled = false;
+  }
+
+  // --- LISTENERS ---
   nextBtn.addEventListener("click", () => {
-    if (!selectedAnswer) {
-      alert("Please select an option");
+    if (questions[currentIndex].type === 'mcq' && !selectedAnswer) {
+      alert("Please select an answer.");
       return;
     }
-
-    clearInterval(timer);
-    checkAnswer();
-    currentIndex++;
-
-    if (currentIndex >= questions.length) {
-      showCompletion();
-    } else {
-      loadQuestion();
-    }
+    saveAndNext();
   });
 
-  // -------------------------------
-  // AI SCORING LOGIC
-  // -------------------------------
-  function generateAIScore() {
-    const total = questions.length;
-    const accuracy = Math.round((correctAnswers / total) * 100);
-
-    const avgTime = Math.round(
-      timeTakenLog.reduce((a, b) => a + b, 0) / timeTakenLog.length
-    );
-
-    let rating = "Needs Improvement";
-    let feedback = [];
-
-    if (accuracy >= 80) {
-      rating = "Excellent";
-      feedback.push("Strong technical fundamentals");
-    } else if (accuracy >= 50) {
-      rating = "Good";
-      feedback.push("Concepts are mostly clear");
-    } else {
-      feedback.push("Revise core technical topics");
-    }
-
-    if (avgTime <= 30) {
-      feedback.push("Good time management");
-    } else {
-      feedback.push("Improve speed and confidence");
-    }
-
-    return {
-      accuracy,
-      avgTime,
-      rating,
-      feedback
-    };
-  }
-
-  // -------------------------------
-  // COMPLETION STATE
-  // -------------------------------
-  function showCompletion() {
-    clearInterval(timer);
-
-    const aiResult = generateAIScore();
-
-    // SAVE FOR INSIGHTS PAGE
-    localStorage.setItem("interviewSummary", JSON.stringify({
-      type: "Technical Interview",
-      language: selectedLanguage.toUpperCase(),
-      date: new Date().toLocaleDateString(),
-      totalQuestions: questions.length,
-      correct: correctAnswers,
-      accuracy: aiResult.accuracy,
-      avgTime: aiResult.avgTime,
-      rating: aiResult.rating,
-      feedback: aiResult.feedback,
-      answers: answerLog
-    }));
-
-    // UI UPDATE
-    questionText.innerHTML = `
-      <strong>Interview Completed 🎉</strong><br><br>
-      <b>Language:</b> ${selectedLanguage.toUpperCase()}<br>
-      <b>Accuracy:</b> ${aiResult.accuracy}%<br>
-      <b>Average Time:</b> ${aiResult.avgTime}s<br>
-      <b>Rating:</b> ${aiResult.rating}<br><br>
-      <b>AI Feedback:</b><br>
-      • ${aiResult.feedback.join("<br>• ")}
-    `;
-
-    optionsBox.innerHTML = "";
-    if (timerEl) timerEl.innerText = "⏱️ Completed";
-
-    nextBtn.innerText = "View Insights";
-    nextBtn.onclick = () => {
-      window.location.href = "candidate-insights.html";
-    };
-  }
-
-  // -------------------------------
-  // INIT
-  // -------------------------------
   loadQuestion();
-
 });

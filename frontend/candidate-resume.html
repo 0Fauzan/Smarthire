@@ -19,12 +19,12 @@
 
 <body>
 
-  <!-- Background -->
+  <!-- Background Effects -->
   <div class="bg-effects">
     <span></span><span></span><span></span>
   </div>
 
-  <!-- Navbar -->
+  <!-- NAVBAR -->
   <nav class="navbar">
     <div class="logo">SmartHire</div>
 
@@ -33,96 +33,170 @@
         <i class="fa-solid fa-moon"></i>
       </button>
 
+      <!-- Profile Menu -->
       <div class="profile-menu">
-        <i class="fa-solid fa-user"></i>
+        <i class="fa-solid fa-user-circle"></i>
         <div class="profile-dropdown">
           <a href="candidate-dashboard.html">Dashboard</a>
           <a href="profile.html">Profile</a>
-          <a href="login.html">Logout</a>
+          <a href="login.html" id="logoutBtn">Logout</a>
         </div>
       </div>
     </div>
   </nav>
 
-  <!-- Hero -->
+  <!-- PAGE HEADER -->
   <section class="hero dashboard">
     <h1>Resume Center</h1>
-    <p>Upload, analyze and improve your resume with AI</p>
+    <p>Upload, analyze, and optimize your resume for AI-driven recruitment</p>
   </section>
 
-  <!-- Resume Features -->
+  <!-- RESUME FEATURES GRID -->
   <section class="features resume-grid">
 
-    <!-- Upload Resume -->
-    <div class="card reveal" id="resumeCard">
+    <!-- 1. UPLOAD RESUME CARD -->
+    <div class="card reveal" id="resumeCard" style="cursor: pointer;">
       <i class="fa-solid fa-file-arrow-up"></i>
       <span>Upload Resume</span>
       <small id="resumeStatus">PDF / DOCX</small>
-      <input type="file" id="resumeInput" hidden>
-    </div>
-<!-- ATS SCORE CARD -->
-<div class="card ats-card reveal" id="atsCard" tabindex="0">
-
-  <!-- COLLAPSED VIEW -->
-  <div class="ats-collapsed">
-    <i class="fa-solid fa-gauge-high ats-icon"></i>
-    <span>ATS Score</span>
-    <small class="ats-mini-score">
-      <span id="atsMiniValue">--</span>/100
-    </small>
-  </div>
-
-  <!-- EXPANDED VIEW -->
-  <div class="ats-expanded">
-
-    <div class="score-circle">
-      <span id="atsValue">--</span>
-      <small>/100</small>
+      <input type="file" id="resumeInput" hidden accept=".pdf,.docx">
     </div>
 
-    <p class="ats-status" id="atsStatus">—</p>
+    <!-- 2. ATS SCORE CARD (FIXED INTERACTION) -->
+    <div class="card ats-card reveal" id="atsCard">
+      
+      <!-- Collapsed State: Shows initially -->
+      <div class="ats-collapsed">
+        <i class="fa-solid fa-gauge-high"></i>
+        <span>ATS Score</span>
+        <small class="ats-mini-score"><span id="atsMiniValue">--</span>/100</small>
+      </div>
 
-    <div class="ats-breakdown">
-      <p>Keywords Match <b id="kwScore">--%</b></p>
-      <p>Formatting <b id="fmtScore">--%</b></p>
-      <p>Sections <b id="secScore">--%</b></p>
+      <!-- Expanded State: Shows on hover -->
+      <div class="ats-expanded">
+        <div class="score-circle">
+          <span id="atsValue">--</span>
+          <small>/100</small>
+        </div>
+        
+        <div class="ats-breakdown">
+          <p>Keywords Match <b id="kwScore">--%</b></p>
+          <p>Formatting <b id="fmtScore">--%</b></p>
+          <p>Sections <b id="secScore">--%</b></p>
+        </div>
+
+        <button class="ats-improve-btn" id="improveResumeBtn">
+          Improve Resume
+        </button>
+      </div>
+
     </div>
 
-    <button class="ats-improve-btn" id="improveResumeBtn">
-    Improve Resume
-    </button>
+    <!-- 3. AI SUGGESTIONS (Redirects to Insights with Mode) -->
+    <a href="candidate-insights.html?mode=resume" class="card reveal">
+      <i class="fa-solid fa-lightbulb"></i>
+      <span>AI Suggestions</span>
+      <small>Content & keyword tips</small>
+    </a>
 
-  </div>
-</div>
-    <!-- AI Feedback -->
-    <a href="candidate-insights.html" class="card reveal">
-    <i class="fa-solid fa-lightbulb"></i>
-    <span>AI Suggestions</span>
-    <small>Content improvements</small>
-  </a>
-
-    <!-- Resume Builder -->
+    <!-- 4. AI RESUME BUILDER -->
     <a href="candidate-resume-builder.html" class="card reveal">
-  <i class="fa-solid fa-wand-magic-sparkles"></i>
-  <span>AI Resume Builder</span>
-  <small>Create ATS-friendly resume</small>
-</a>
+      <i class="fa-solid fa-wand-magic-sparkles"></i>
+      <span>AI Resume Builder</span>
+      <small>Create ATS-friendly resume</small>
+    </a>
 
   </section>
 
   <footer>
-    © 2026 SmartHire • Resume Center
+    © 2026 SmartHire • AI Recruitment System
   </footer>
 
-  <!-- Scripts -->
+  <!-- SCRIPTS -->
   <script src="js/ui.js"></script>
-  <script src="js/candidate.js"></script>
   <script src="js/auth-guard.js"></script>
+  
   <script>
-  // Navigate to Resume Builder / Improvement page
-  document.getElementById("improveResumeBtn")?.addEventListener("click", () => {
-    window.location.href = "candidate-resume-builder.html";
-  });
+    // ==========================================
+    // RESUME CENTER LOGIC
+    // ==========================================
+
+    document.addEventListener("DOMContentLoaded", () => {
+      const resumeInput = document.getElementById("resumeInput");
+      const resumeStatus = document.getElementById("resumeStatus");
+      const resumeCard = document.getElementById("resumeCard");
+
+      // 1. Trigger File Input
+      if (resumeCard) {
+        resumeCard.onclick = () => resumeInput.click();
+      }
+
+      // 2. Handle File Selection
+      if (resumeInput) {
+        resumeInput.addEventListener("change", (e) => {
+          const file = e.target.files[0];
+          if (file) {
+            resumeStatus.innerText = `Uploaded ✓ (${file.name})`;
+            resumeStatus.style.color = "#4ade80";
+            
+            localStorage.setItem("resume_uploaded", "true");
+            localStorage.setItem("resume_filename", file.name);
+
+            simulateATSScore();
+          }
+        });
+      }
+
+      // 3. Persist Data on Refresh
+      if (localStorage.getItem("resume_uploaded") === "true") {
+        resumeStatus.innerText = `Uploaded ✓ (${localStorage.getItem("resume_filename")})`;
+        resumeStatus.style.color = "#4ade80";
+        const savedScore = localStorage.getItem("last_ats_score") || 72;
+        updateATSUI(savedScore);
+      }
+
+      // 4. Improve Resume Button Logic
+      document.getElementById("improveResumeBtn").addEventListener("click", (e) => {
+          e.stopPropagation(); // Prevent card hover triggers
+          localStorage.setItem("builder_mode", "improve");
+          window.location.href = "candidate-resume-builder.html";
+      });
+    });
+
+    function simulateATSScore() {
+      const mini = document.getElementById("atsMiniValue");
+      mini.innerText = "...";
+      
+      setTimeout(() => {
+        const score = Math.floor(Math.random() * (92 - 65 + 1)) + 65;
+        localStorage.setItem("last_ats_score", score);
+        updateATSUI(score);
+      }, 1500);
+    }
+
+    function updateATSUI(score) {
+      document.getElementById("atsMiniValue").innerText = score;
+      document.getElementById("atsValue").innerText = score;
+      
+      const kw = parseInt(score) + 3;
+      const fmt = parseInt(score) - 5;
+      const sec = parseInt(score) + 2;
+
+      document.getElementById("kwScore").innerText = kw + "%";
+      document.getElementById("fmtScore").innerText = fmt + "%";
+      document.getElementById("secScore").innerText = sec + "%";
+
+      // Save for Insights Page (Mode: Resume)
+      const analysis = {
+          score: score,
+          filename: localStorage.getItem("resume_filename"),
+          date: new Date().toLocaleDateString(),
+          logic: kw,   // Role Alignment
+          syntax: fmt, // Keyword Density
+          speed: sec   // Readability
+      };
+      localStorage.setItem("resume_analysis_data", JSON.stringify(analysis));
+    }
   </script>
 
 </body>

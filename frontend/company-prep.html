@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>SmartHire | Company Specific Prep</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <!-- Fonts & Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="css/style.css">
+
+  <style>
+    /* COMPANY PREP SPECIFIC STYLES */
+    
+    /* Search Bar */
+    .search-container {
+      max-width: 600px;
+      margin: -20px auto 40px;
+      position: relative;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 15px 50px 15px 25px;
+      border-radius: 30px;
+      border: 1px solid var(--border);
+      background: rgba(0, 0, 0, 0.3);
+      color: white;
+      font-size: 16px;
+      backdrop-filter: blur(10px);
+      outline: none;
+      transition: all 0.3s ease;
+    }
+
+    .search-input:focus {
+      border-color: var(--accent);
+      background: rgba(0, 0, 0, 0.5);
+      box-shadow: 0 0 15px rgba(111, 211, 255, 0.1);
+    }
+
+    .search-icon {
+      position: absolute;
+      right: 20px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: rgba(255, 255, 255, 0.5);
+    }
+
+    /* Company Grid */
+    .company-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 25px;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px 60px;
+    }
+
+    .company-card {
+      background: var(--glass);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 30px 20px;
+      text-align: center;
+      transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 15px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .company-card:hover {
+      transform: translateY(-10px);
+      background: rgba(255, 255, 255, 0.15);
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Brand Colors */
+    .brand-icon { font-size: 42px; margin-bottom: 5px; }
+    .google { color: #DB4437; }
+    .amazon { color: #FF9900; }
+    .microsoft { color: #00A4EF; }
+    .meta { color: #0668E1; }
+    .netflix { color: #E50914; }
+    .apple { color: #A2AAAD; }
+    .tesla { color: #E82127; }
+    .adobe { color: #FF0000; }
+
+    .company-name {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 700;
+      font-size: 18px;
+    }
+
+    .difficulty-badge {
+      font-size: 11px;
+      padding: 4px 10px;
+      border-radius: 15px;
+      background: rgba(255, 255, 255, 0.1);
+      color: rgba(255, 255, 255, 0.8);
+    }
+
+    /* Selection Modal */
+    .prep-modal {
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      display: none; /* Hidden by default */
+      align-items: center;
+      justify-content: center;
+      z-index: 2000;
+      backdrop-filter: blur(5px);
+    }
+
+    .modal-content {
+      background: #1a2a33;
+      width: 90%;
+      max-width: 500px;
+      border-radius: 20px;
+      padding: 40px;
+      text-align: center;
+      border: 1px solid var(--border);
+      position: relative;
+      animation: zoomIn 0.3s ease;
+    }
+
+    @keyframes zoomIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+    .modal-close {
+      position: absolute;
+      top: 15px; right: 20px;
+      font-size: 24px;
+      cursor: pointer;
+      opacity: 0.7;
+    }
+    
+    .focus-list {
+      list-style: none;
+      margin: 20px 0;
+      text-align: left;
+      background: rgba(0,0,0,0.2);
+      padding: 20px;
+      border-radius: 10px;
+    }
+    .focus-list li { margin-bottom: 8px; font-size: 14px; display: flex; gap: 10px; }
+    .focus-list li i { color: var(--accent); }
+
+  </style>
+</head>
+
+<body>
+  <div class="bg-effects"><span></span><span></span><span></span></div>
+
+  <nav class="navbar">
+    <div class="logo">SmartHire</div>
+    <div class="nav-actions">
+      <a href="candidate-interview.html" class="nav-link">Back</a>
+      <button id="themeToggle" class="theme-btn"><i class="fa-solid fa-moon"></i></button>
+    </div>
+  </nav>
+
+  <section class="hero dashboard">
+    <h1>Target Your Dream Company</h1>
+    <p>Tailored interview questions based on real hiring patterns.</p>
+  </section>
+
+  <!-- Search -->
+  <div class="search-container">
+    <input type="text" class="search-input" id="companySearch" placeholder="Search companies (e.g. Google, Amazon)..." onkeyup="filterCompanies()">
+    <i class="fa-solid fa-magnifying-glass search-icon"></i>
+  </div>
+
+  <!-- Grid -->
+  <main class="company-grid" id="companyGrid">
+    
+    <!-- Google -->
+    <div class="company-card" onclick="openPrep('Google', 'Hard', 'google')">
+      <i class="fa-brands fa-google brand-icon google"></i>
+      <span class="company-name">Google</span>
+      <span class="difficulty-badge">Hard • Algorithms</span>
+    </div>
+
+    <!-- Amazon -->
+    <div class="company-card" onclick="openPrep('Amazon', 'Medium', 'amazon')">
+      <i class="fa-brands fa-amazon brand-icon amazon"></i>
+      <span class="company-name">Amazon</span>
+      <span class="difficulty-badge">Medium • Leadership Principles</span>
+    </div>
+
+    <!-- Microsoft -->
+    <div class="company-card" onclick="openPrep('Microsoft', 'Medium', 'microsoft')">
+      <i class="fa-brands fa-microsoft brand-icon microsoft"></i>
+      <span class="company-name">Microsoft</span>
+      <span class="difficulty-badge">Medium • OOP & System Design</span>
+    </div>
+
+    <!-- Meta -->
+    <div class="company-card" onclick="openPrep('Meta', 'Hard', 'meta')">
+      <i class="fa-brands fa-meta brand-icon meta"></i>
+      <span class="company-name">Meta</span>
+      <span class="difficulty-badge">Hard • Speed & Arrays</span>
+    </div>
+
+    <!-- Netflix -->
+    <div class="company-card" onclick="openPrep('Netflix', 'Very Hard', 'netflix')">
+      <i class="fa-solid fa-n brand-icon netflix"></i> <!-- FontAwesome doesn't have brand N sometimes, using generic -->
+      <span class="company-name">Netflix</span>
+      <span class="difficulty-badge">Very Hard • System Design</span>
+    </div>
+
+    <!-- Apple -->
+    <div class="company-card" onclick="openPrep('Apple', 'Hard', 'apple')">
+      <i class="fa-brands fa-apple brand-icon apple"></i>
+      <span class="company-name">Apple</span>
+      <span class="difficulty-badge">Hard • Hardware/Software</span>
+    </div>
+
+    <!-- Tesla -->
+    <div class="company-card" onclick="openPrep('Tesla', 'Hard', 'tesla')">
+      <i class="fa-solid fa-bolt brand-icon tesla"></i>
+      <span class="company-name">Tesla</span>
+      <span class="difficulty-badge">Hard • Low-Level C/C++</span>
+    </div>
+
+    <!-- Adobe -->
+    <div class="company-card" onclick="openPrep('Adobe', 'Medium', 'adobe')">
+      <i class="fa-solid fa-a brand-icon adobe"></i>
+      <span class="company-name">Adobe</span>
+      <span class="difficulty-badge">Medium • Problem Solving</span>
+    </div>
+
+  </main>
+
+  <!-- Modal -->
+  <div class="prep-modal" id="prepModal">
+    <div class="modal-content">
+      <span class="modal-close" onclick="closeModal()">&times;</span>
+      
+      <i id="modalIcon" class="brand-icon" style="margin-bottom: 15px;"></i>
+      <h2 id="modalTitle">Google Prep</h2>
+      <p style="opacity: 0.7; font-size: 14px; margin-top: 5px;">Estimated Duration: 45 Mins</p>
+
+      <ul class="focus-list">
+        <li><i class="fa-solid fa-code"></i> <span id="focus1">Dynamic Programming</span></li>
+        <li><i class="fa-solid fa-sitemap"></i> <span id="focus2">Graph Algorithms</span></li>
+        <li><i class="fa-solid fa-comments"></i> <span id="focus3">System Design (Scalability)</span></li>
+      </ul>
+
+      <button class="cta" onclick="startCompanySession()">Start Simulation</button>
+    </div>
+  </div>
+
+  <footer>© 2026 SmartHire • Company Prep</footer>
+
+  <script src="js/ui.js"></script>
+  <script src="js/auth-guard.js"></script>
+  <script>
+    const modal = document.getElementById('prepModal');
+    let selectedCompany = "";
+
+    // Company Focus Data
+    const companyData = {
+      google: { icon: "fa-brands fa-google google", f1: "Dynamic Programming & Trees", f2: "Graph Algorithms", f3: "Googleyness (Behavioral)" },
+      amazon: { icon: "fa-brands fa-amazon amazon", f1: "Leadership Principles (LP)", f2: "Arrays & Strings", f3: "OOD (Object Oriented Design)" },
+      microsoft: { icon: "fa-brands fa-microsoft microsoft", f1: "Linked Lists & Trees", f2: "System Design", f3: "Collaborative Culture" },
+      meta: { icon: "fa-brands fa-meta meta", f1: "High-Speed Coding", f2: "Arrays & Heaps", f3: "Product Architecture" },
+      netflix: { icon: "fa-solid fa-n netflix", f1: "System Design (Heavy)", f2: "Concurrency", f3: "Culture Memo" },
+      apple: { icon: "fa-brands fa-apple apple", f1: "Hardware/OS Constraints", f2: "Linked Lists", f3: "Product Passion" },
+      tesla: { icon: "fa-solid fa-bolt tesla", f1: "Low-Level C/C++", f2: "Bit Manipulation", f3: "First Principles Thinking" },
+      adobe: { icon: "fa-solid fa-a adobe", f1: "String Manipulation", f2: "Puzzles", f3: "Creative Tools Knowledge" }
+    };
+
+    function openPrep(name, difficulty, key) {
+      selectedCompany = key;
+      const data = companyData[key];
+
+      document.getElementById('modalTitle').innerText = `${name} Interview Prep`;
+      document.getElementById('modalIcon').className = `brand-icon ${data.icon}`;
+      document.getElementById('focus1').innerText = data.f1;
+      document.getElementById('focus2').innerText = data.f2;
+      document.getElementById('focus3').innerText = data.f3;
+
+      modal.style.display = 'flex';
+    }
+
+    function closeModal() {
+      modal.style.display = 'none';
+    }
+
+    function startCompanySession() {
+      // Directs to technical interview but passes company param for backend tailoring
+      window.location.href = `technical-interview.html?company=${selectedCompany}&mode=full`;
+    }
+
+    // Search Filter
+    function filterCompanies() {
+      const input = document.getElementById('companySearch').value.toLowerCase();
+      const cards = document.getElementsByClassName('company-card');
+
+      for (let card of cards) {
+        const name = card.querySelector('.company-name').innerText.toLowerCase();
+        if (name.includes(input)) {
+          card.style.display = "flex";
+        } else {
+          card.style.display = "none";
+        }
+      }
+    }
+
+    // Close modal on outside click
+    window.onclick = function(event) {
+      if (event.target == modal) {
+        closeModal();
+      }
+    }
+  </script>
+</body>
+</html>

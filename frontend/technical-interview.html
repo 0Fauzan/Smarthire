@@ -1,181 +1,382 @@
-// ======================================
-// TECHNICAL INTERVIEW – FINAL STABLE LOGIC
-// ======================================
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SmartHire | Technical Assessment</title>
+  
+  <!-- Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  
+  <!-- Ace Editor -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.23.4/ace.js"></script>
 
-document.addEventListener("DOMContentLoaded", () => {
-
-  // -------------------------------
-  // ELEMENTS
-  // -------------------------------
-  const questionText = document.getElementById("questionText");
-  const optionsBox = document.getElementById("optionsBox");
-  const nextBtn = document.getElementById("nextBtn");
-  const timerEl = document.getElementById("timer");
-
-  // -------------------------------
-  // URL PARAMS (LANGUAGE)
-  // -------------------------------
-  const params = new URLSearchParams(window.location.search);
-  const selectedLanguage = (params.get("lang") || "c").toUpperCase();
-
-  // -------------------------------
-  // STATE
-  // -------------------------------
-  let currentIndex = 0;
-  let selectedAnswer = null;
-  let timer = null;
-  let timeLeft = 60;
-
-  // -------------------------------
-  // QUESTIONS (TEMP – BACKEND READY)
-  // -------------------------------
-  const questions = [
-    {
-      question: "What is the time complexity of binary search?",
-      options: ["O(n)", "O(log n)", "O(n log n)", "O(1)"],
-      correct: "O(log n)"
-    },
-    {
-      question: "Which data structure follows FIFO?",
-      options: ["Stack", "Queue", "Tree", "Graph"],
-      correct: "Queue"
-    },
-    {
-      question: "What does SQL stand for?",
-      options: [
-        "Structured Query Language",
-        "Simple Query Language",
-        "Statement Query Logic",
-        "Sequential Query Language"
-      ],
-      correct: "Structured Query Language"
+  <style>
+    /* =========================================
+       INLINE CSS - BULLETPROOF UI
+    ========================================= */
+    :root {
+      --bg1: #0f2027; --bg2: #203a43; --bg3: #2c5364;
+      --text: #ffffff; --accent: #6fd3ff;
+      --glass: rgba(255, 255, 255, 0.05);
+      --border: rgba(255, 255, 255, 0.15);
     }
-  ];
 
-  // -------------------------------
-  // REVIEW DATA (FOR INSIGHTS)
-  // -------------------------------
-  const reviewData = {
-    meta: {
-      type: "Technical Interview",
-      language: selectedLanguage,
-      date: new Date().toLocaleDateString()
-    },
-    results: []
-  };
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
 
-  // -------------------------------
-  // TIMER
-  // -------------------------------
-  function startTimer() {
-    clearInterval(timer);
-    timeLeft = 60;
-    updateTimerUI();
+    body {
+      background: linear-gradient(135deg, var(--bg1), var(--bg2), var(--bg3));
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
 
-    timer = setInterval(() => {
-      timeLeft--;
-      updateTimerUI();
+    /* NAVBAR */
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 5%;
+      border-bottom: 1px solid var(--border);
+      backdrop-filter: blur(10px);
+    }
 
-      if (timeLeft <= 0) {
-        clearInterval(timer);
-        saveAnswer(null);
-        goNext();
+    .logo { font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 22px; }
+
+    .badge {
+      padding: 5px 12px;
+      border: 1px solid var(--accent);
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--accent);
+    }
+
+    /* MAIN CONTAINER */
+    .assessment-container {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 40px 20px;
+    }
+
+    .assessment-card {
+      background: var(--glass);
+      border: 1px solid var(--border);
+      backdrop-filter: blur(20px);
+      width: 100%;
+      max-width: 1000px;
+      border-radius: 24px;
+      padding: 40px;
+      min-height: 580px;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+    }
+
+    /* PROGRESS & TIMER */
+    .header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+    }
+
+    .progress-wrap { width: 200px; }
+    .progress-track { height: 6px; background: rgba(255,255,255,0.1); border-radius: 10px; overflow: hidden; margin-top: 8px; }
+    .progress-fill { height: 100%; width: 0%; background: var(--accent); transition: width 0.5s ease; }
+
+    #timer {
+      background: rgba(0,0,0,0.3);
+      padding: 8px 16px;
+      border-radius: 12px;
+      font-weight: 700;
+      color: var(--accent);
+      border: 1px solid var(--border);
+    }
+
+    /* QUESTION SECTION */
+    #questionText {
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 30px;
+      line-height: 1.4;
+    }
+
+    /* MCQ OPTIONS GRID (2x2) */
+    #optionsBox {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      flex-grow: 1;
+    }
+
+    .option-label {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--border);
+      padding: 25px;
+      border-radius: 16px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      transition: 0.3s;
+      font-weight: 500;
+      min-height: 90px;
+    }
+
+    .option-label:hover { background: rgba(255,255,255,0.08); transform: translateX(5px); }
+    .option-label.active { border-color: var(--accent); background: rgba(111,211,255,0.1); }
+
+    /* ACE EDITOR */
+    #editorContainer {
+      height: 380px;
+      width: 100%;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      display: none; /* Controlled by JS */
+    }
+
+    /* FOOTER BUTTON */
+    .footer-row {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 30px;
+    }
+
+    .cta-btn {
+      background: var(--accent);
+      color: #0f2027;
+      border: none;
+      padding: 14px 35px;
+      border-radius: 30px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: 0.3s;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .cta-btn:hover { transform: scale(1.05); box-shadow: 0 0 20px rgba(111,211,255,0.3); }
+    .cta-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    @media (max-width: 768px) {
+      #optionsBox { grid-template-columns: 1fr; }
+      .assessment-card { padding: 25px; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="bg-effects"><span></span><span></span></div>
+
+  <nav class="navbar">
+    <div class="logo">SmartHire</div>
+    <div class="nav-actions">
+      <div id="languageBadge" class="badge">-- SESSION</div>
+    </div>
+  </nav>
+
+  <main class="assessment-container">
+    <div class="assessment-card">
+      
+      <div class="header-row">
+        <div class="progress-wrap">
+          <small style="opacity: 0.6; text-transform: uppercase; letter-spacing: 1px;">Progress</small>
+          <div class="progress-track"><div id="progressFill" class="progress-fill"></div></div>
+        </div>
+        <div id="timer">⏱️ 00:00</div>
+      </div>
+
+      <h2 id="questionText">Initializing...</h2>
+
+      <!-- MCQ -->
+      <div id="optionsBox"></div>
+
+      <!-- Coding -->
+      <div id="editorContainer"></div>
+
+      <div class="footer-row">
+        <button id="nextBtn" class="cta-btn">Next Question <i class="fa-solid fa-arrow-right"></i></button>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- =========================================
+       JAVASCRIPT LOGIC
+  ========================================= -->
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      // 1. STATE & PARAMS
+      const params = new URLSearchParams(window.location.search);
+      const companyParam = params.get("company");
+      const langParam = params.get("lang") || "python";
+      const selectedLanguage = (companyParam ? "python" : langParam).toLowerCase();
+
+      let currentIndex = 0;
+      let selectedAnswer = null;
+      let timerInterval = null;
+      let timeLeft = 0;
+
+      // 2. QUESTION POOL
+      const pool = {
+        python: [
+          { type: "mcq", q: "Which data structure uses LIFO?", o: ["Stack", "Queue", "Heap", "Linked List"], a: "Stack" },
+          { type: "coding", q: "Write a function to find the maximum number in a list.", c: "def find_max(arr):\n    # Write code here\n    return max(arr)" }
+        ],
+        java: [
+          { type: "mcq", q: "Which keyword is used for inheritance?", o: ["implements", "extends", "inherits", "using"], a: "extends" },
+          { type: "coding", q: "Write a Java method to reverse a string.", c: "public String reverse(String s) {\n    return new StringBuilder(s).reverse().toString();\n}" }
+        ],
+        javascript: [
+          { type: "mcq", q: "Which of the following is not a primitive type?", o: ["String", "Boolean", "Object", "Number"], a: "Object" },
+          { type: "coding", q: "Write a function that returns the square of a number.", c: "function square(n) {\n    return n * n;\n}" }
+        ],
+        sql: [
+          { type: "mcq", q: "Which command is used to remove all records from a table?", o: ["DELETE", "REMOVE", "TRUNCATE", "DROP"], a: "TRUNCATE" },
+          { type: "coding", q: "Select all users whose age is over 18.", c: "SELECT * FROM Users WHERE age > 18;" }
+        ]
+      };
+
+      const questions = (pool[selectedLanguage] || pool.python).map(item => ({
+        type: item.type, question: item.q, options: item.o, correct: item.a, starterCode: item.c
+      }));
+
+      // 3. UI REFERENCES
+      const questionText = document.getElementById("questionText");
+      const optionsBox = document.getElementById("optionsBox");
+      const editorContainer = document.getElementById("editorContainer");
+      const nextBtn = document.getElementById("nextBtn");
+      const timerEl = document.getElementById("timer");
+      const progressFill = document.getElementById("progressFill");
+
+      const reviewData = {
+        meta: { type: companyParam ? "Company Prep" : "Technical Interview", language: selectedLanguage, date: new Date().toLocaleDateString() },
+        results: []
+      };
+
+      // 4. ACE EDITOR INIT
+      let editor = ace.edit("editorContainer");
+      editor.setTheme("ace/theme/monokai");
+      const aceMap = { 'cpp': 'c_cpp', 'c': 'c_cpp', 'sql': 'sql', 'javascript': 'javascript', 'python': 'python', 'java': 'java' };
+      editor.session.setMode(`ace/mode/${aceMap[selectedLanguage] || 'python'}`);
+      editor.setFontSize(14);
+
+      // 5. ENGINE FUNCTIONS
+      function updateTimerUI() {
+        const mins = Math.floor(timeLeft / 60);
+        const secs = timeLeft % 60;
+        timerEl.innerText = `⏱️ ${mins}:${secs.toString().padStart(2, '0')}`;
+        timerEl.style.color = timeLeft < 15 ? "#ff6b6b" : "#6fd3ff";
       }
-    }, 1000);
-  }
 
-  function updateTimerUI() {
-    if (timerEl) {
-      timerEl.innerText = `⏱️ ${timeLeft}s`;
-    }
-  }
+      function startTimer() {
+        clearInterval(timerInterval);
+        timeLeft = questions[currentIndex].type === 'coding' ? 300 : 60;
+        updateTimerUI();
+        timerInterval = setInterval(() => {
+          timeLeft--;
+          updateTimerUI();
+          if (timeLeft <= 0) saveAndNext();
+        }, 1000);
+      }
 
-  // -------------------------------
-  // LOAD QUESTION
-  // -------------------------------
-  function loadQuestion() {
-    selectedAnswer = null;
-    optionsBox.innerHTML = "";
+      function loadQuestion() {
+        selectedAnswer = null;
+        const q = questions[currentIndex];
+        
+        document.getElementById("languageBadge").innerText = (companyParam || selectedLanguage).toUpperCase() + " SESSION";
+        questionText.innerText = q.question;
+        progressFill.style.width = ((currentIndex + 1) / questions.length * 100) + "%";
 
-    const q = questions[currentIndex];
-    questionText.innerText = q.question;
+        if (q.type === "mcq") {
+          optionsBox.style.display = "grid";
+          editorContainer.style.display = "none";
+          optionsBox.innerHTML = "";
+          q.options.forEach(opt => {
+            const lbl = document.createElement("label");
+            lbl.className = "option-label";
+            lbl.innerHTML = `<input type="radio" name="choice" style="display:none"> ${opt}`;
+            lbl.onclick = () => {
+              selectedAnswer = opt;
+              document.querySelectorAll('.option-label').forEach(el => el.classList.remove('active'));
+              lbl.classList.add('active');
+            };
+            optionsBox.appendChild(lbl);
+          });
+        } else {
+          optionsBox.style.display = "none";
+          editorContainer.style.display = "block";
+          editor.setValue(q.starterCode, -1);
+        }
 
-    q.options.forEach(option => {
-      const label = document.createElement("label");
-      label.innerHTML = `
-        <input type="radio" name="option" value="${option}">
-        ${option}
-      `;
+        if (currentIndex === questions.length - 1) nextBtn.innerHTML = `Finish Session <i class="fa-solid fa-check"></i>`;
+        startTimer();
+      }
 
-      label.addEventListener("click", () => {
-        selectedAnswer = option;
-      });
+      function saveAndNext() {
+        const q = questions[currentIndex];
+        const userRes = q.type === 'mcq' ? selectedAnswer : editor.getValue();
+        
+        reviewData.results.push({
+          question: q.question,
+          type: q.type,
+          correct: q.correct,
+          user: userRes || "No Answer",
+          isCorrect: q.type === 'mcq' ? (userRes === q.correct) : "Pending Review"
+        });
 
-      optionsBox.appendChild(label);
-    });
+        currentIndex++;
+        if (currentIndex < questions.length) loadQuestion();
+        else finishSession();
+      }
 
-    startTimer();
-  }
+      async function finishSession() {
+        clearInterval(timerInterval);
+        const token = localStorage.getItem("smarthire_token");
 
-  // -------------------------------
-  // SAVE ANSWER
-  // -------------------------------
-  function saveAnswer(answer) {
-    const q = questions[currentIndex];
+        nextBtn.innerText = "Saving...";
+        nextBtn.disabled = true;
 
-    reviewData.results.push({
-      question: q.question,
-      correct: q.correct,
-      user: answer || "No Answer",
-      isCorrect: answer === q.correct,
-      timeTaken: 60 - timeLeft
-    });
-  }
+        const correctCount = reviewData.results.filter(r => r.isCorrect === true).length;
+        const score = Math.round((correctCount / reviewData.results.length) * 100);
 
-  // -------------------------------
-  // NEXT LOGIC
-  // -------------------------------
-  function goNext() {
-    currentIndex++;
+        try {
+          const response = await fetch('http://127.0.0.1:5000/api/interview/save', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+            body: JSON.stringify({ ...reviewData.meta, results: reviewData.results, score: score })
+          });
 
-    if (currentIndex >= questions.length) {
-      finishInterview();
-    } else {
+          if (response.ok) {
+            localStorage.setItem("interviewReview", JSON.stringify(reviewData));
+            window.location.href = "interview-summary.html";
+          } else {
+            const err = await response.json();
+            alert("Error: " + (err.msg || "Session expired. Please re-login."));
+            window.location.href = "login.html";
+          }
+        } catch (e) {
+          alert("Network Error. Is the server running?");
+          nextBtn.innerText = "Try Again";
+          nextBtn.disabled = false;
+        }
+      }
+
+      nextBtn.onclick = () => {
+        if (questions[currentIndex].type === 'mcq' && !selectedAnswer) {
+          alert("Please select an option.");
+          return;
+        }
+        saveAndNext();
+      };
+
       loadQuestion();
-    }
-  }
-
-  // -------------------------------
-  // BUTTON CLICK
-  // -------------------------------
-  nextBtn.addEventListener("click", () => {
-    if (!selectedAnswer) {
-      alert("Please select an option");
-      return;
-    }
-
-    clearInterval(timer);
-    saveAnswer(selectedAnswer);
-    goNext();
-  });
-
-  // -------------------------------
-  // FINISH
-  // -------------------------------
-  function finishInterview() {
-    clearInterval(timer);
-
-    localStorage.setItem(
-      "interviewReview",
-      JSON.stringify(reviewData)
-    );
-
-    window.location.href = "candidate-insights.html";
-  }
-
-  // -------------------------------
-  // INIT
-  // -------------------------------
-  loadQuestion();
-
-});
+    });
+  </script>
+</body>
+</html> 

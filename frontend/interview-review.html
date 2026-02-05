@@ -2,48 +2,211 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Interview Review</title>
+  <title>SmartHire | Interview Review</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <link rel="stylesheet" href="css/style.css">
+
+  <style>
+    /* =========================================
+       REVIEW PAGE PREMIUM STYLING
+    ========================================= */
+    .review-container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 0 20px 60px;
+    }
+
+    /* Score Header Section */
+    .score-summary {
+      background: var(--glass);
+      border: 1px solid var(--border);
+      backdrop-filter: blur(15px);
+      border-radius: 24px;
+      padding: 40px;
+      text-align: center;
+      margin-bottom: 40px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+    }
+
+    .large-score {
+      font-size: 64px;
+      font-weight: 800;
+      color: var(--accent);
+      font-family: 'Montserrat', sans-serif;
+      line-height: 1;
+      margin-bottom: 10px;
+    }
+
+    /* Individual Question Cards */
+    .review-card {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 20px;
+      padding: 30px;
+      margin-bottom: 30px;
+      transition: all 0.3s ease;
+      position: relative;
+    }
+
+    .review-card.correct { border-left: 6px solid #4ade80; }
+    .review-card.incorrect { border-left: 6px solid #ff6b6b; }
+    .review-card.coding-review { border-left: 6px solid #a855f7; }
+
+    .q-meta {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 15px;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      opacity: 0.6;
+    }
+
+    .q-text {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 20px;
+      line-height: 1.5;
+    }
+
+    /* Answer Comparison Boxes */
+    .ans-box {
+      background: rgba(0, 0, 0, 0.2);
+      padding: 15px 20px;
+      border-radius: 12px;
+      margin-bottom: 10px;
+      font-size: 14px;
+    }
+
+    .ans-box.user-ans { border: 1px solid rgba(255, 255, 255, 0.1); }
+    .ans-box.correct-ans { border: 1px solid rgba(74, 222, 128, 0.3); color: #4ade80; }
+
+    /* Code Display Section */
+    .code-display {
+      background: #0d1117; /* GitHub Dark Theme */
+      color: #e6edf3;
+      padding: 20px;
+      border-radius: 12px;
+      font-family: 'Fira Code', monospace;
+      font-size: 13px;
+      overflow-x: auto;
+      margin-top: 10px;
+      border: 1px solid #30363d;
+    }
+
+    /* AI Feedback Highlight */
+    .ai-feedback-box {
+      background: rgba(168, 85, 247, 0.1);
+      border: 1px solid rgba(168, 85, 247, 0.3);
+      padding: 20px;
+      border-radius: 15px;
+      margin-top: 20px;
+    }
+
+    .ai-feedback-box strong {
+      color: #a855f7;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+
+    /* Footer Nav */
+    /* =========================================
+   FIXED FOOTER BUTTON ALIGNMENT
+========================================= */
+.review-footer {
+  display: flex;
+  align-items: center;      /* Vertically centers both buttons */
+  justify-content: center;   /* Horizontally centers them */
+  gap: 20px;                 /* Spacing between buttons */
+  margin-top: 50px;
+  padding-bottom: 50px;
+}
+
+/* Base style for both buttons to ensure same height */
+.review-footer .btn-secondary, 
+.review-footer .cta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 48px;              /* Fixed height for perfect alignment */
+  padding: 0 30px;
+  border-radius: 30px;
+  font-weight: 700;
+  font-size: 14px;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  white-space: nowrap;       /* Prevents text wrapping */
+}
+
+/* Secondary (Ghost) Style for 'Back to Home' */
+.btn-secondary {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: white !important;
+}
+
+.btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: white;
+}
+
+/* Primary style check (View Detailed Charts) */
+.review-footer .cta {
+  background: var(--accent);
+  color: #000 !important;
+  border: none;
+}
+
+.review-footer .cta:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(111, 211, 255, 0.3);
+}
+  </style>
 </head>
 
 <body>
+  <div class="bg-effects"><span></span><span></span><span></span></div>
 
-<section class="hero dashboard">
-  <h1>Question Review</h1>
-  <p>Your answer vs AI recommended answer</p>
-</section>
+  <nav class="navbar">
+    <div class="logo">SmartHire</div>
+    <div class="nav-actions">
+      <a href="candidate-dashboard.html" class="nav-link">Dashboard</a>
+    </div>
+  </nav>
 
-<section class="features" id="reviewContainer"></section>
+  <header class="hero">
+    <h1>Interview Performance</h1>
+    <p id="subHeader">Analyzing your session...</p>
+  </header>
 
-<script>
-const data = JSON.parse(localStorage.getItem("interviewReview"));
-const container = document.getElementById("reviewContainer");
+  <main class="review-container">
+    
+    <!-- 1. Top Score Card -->
+    <section class="score-summary">
+      <div class="large-score" id="finalScore">--%</div>
+      <p id="performanceText" style="opacity: 0.8;">Calculating results...</p>
+    </section>
 
-const aiAnswers = {
-  "What is the time complexity of binary search?":
-    "Binary search divides the search space in half each time, resulting in O(log n) complexity.",
-  "Which data structure follows FIFO?":
-    "A queue follows First In First Out (FIFO), meaning the first inserted element is removed first.",
-  "What does SQL stand for?":
-    "SQL stands for Structured Query Language and is used for managing relational databases."
-};
+    <!-- 2. Question Cards (Injected by JS) -->
+    <div id="reviewContainer">
+        <!-- Cards like .review-card correct/incorrect will appear here -->
+    </div>
 
-if (data && data.results) {
-  data.results.forEach((q, i) => {
-    const card = document.createElement("div");
-    card.className = "card show";
+    <!-- 3. Navigation -->
+    <div class="review-footer">
+        <a href="candidate-dashboard.html" class="btn secondary">Back to Home</a>
+        <a href="candidate-insights.html" class="cta">View Detailed Charts</a>
+    </div>
 
-    card.innerHTML = `
-      <strong>Q${i + 1}: ${q.question}</strong>
-      <small><b>Your Answer:</b> ${q.user}</small>
-      <small><b>Correct Answer:</b> ${q.correct}</small>
-      <small><b>AI Explanation:</b> ${aiAnswers[q.question] || "AI explanation coming soon"}</small>
-    `;
+  </main>
 
-    container.appendChild(card);
-  });
-}
-</script>
+  <footer>© 2026 SmartHire • Assessment Report</footer>
 
+  <script src="js/ui.js"></script>
+  <script src="js/auth-guard.js"></script>
+  <script src="js/interview-review.js"></script>
 </body>
 </html>

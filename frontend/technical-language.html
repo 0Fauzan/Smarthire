@@ -5,71 +5,94 @@
   <title>SmartHire | Select Language</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Montserrat:wght@600;700;800&display=swap" rel="stylesheet">
-
-  <!-- Icons -->
+  <!-- Fonts & Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-
-  <!-- Main CSS -->
   <link rel="stylesheet" href="css/style.css">
 </head>
 
 <body>
 
-<!-- Background -->
-<div class="bg-effects">
-  <span></span><span></span><span></span>
-</div>
-
-<!-- Navbar -->
-<nav class="navbar">
-  <div class="logo">SmartHire</div>
-  <div class="nav-actions">
-    <a href="candidate-interview.html" class="nav-link">Back</a>
-  </div>
-</nav>
-
-<!-- Hero -->
-<section class="hero dashboard">
-  <h1>Select Programming Language</h1>
-  <p>This will tailor your technical interview questions</p>
-</section>
-
-<!-- Language Options -->
-<section class="features">
-
-  <div class="card reveal" onclick="startInterview('c')">
-    <i class="fa-solid fa-c"></i>
-    <span>C Programming</span>
-    <small>Core concepts & logic</small>
+  <!-- Background Effects -->
+  <div class="bg-effects">
+    <span></span><span></span><span></span>
   </div>
 
-  <div class="card reveal" onclick="startInterview('python')">
-    <i class="fa-brands fa-python"></i>
-    <span>Python</span>
-    <small>Data structures & scripting</small>
-  </div>
+  <!-- NAVBAR -->
+  <nav class="navbar">
+    <div class="logo">SmartHire</div>
+    <div class="nav-actions">
+      <a href="candidate-interview.html" class="nav-link">
+        <i class="fa-solid fa-arrow-left"></i> Back
+      </a>
+      <button id="themeToggle" class="theme-btn"><i class="fa-solid fa-moon"></i></button>
+    </div>
+  </nav>
 
-  <div class="card reveal" onclick="startInterview('java')">
-    <i class="fa-brands fa-java"></i>
-    <span>Java</span>
-    <small>OOP & problem solving</small>
-  </div>
+  <!-- HERO SECTION -->
+  <section class="hero dashboard">
+    <h1>Select Programming Language</h1>
+    <p>Choose a language to tailor your technical interview questions and coding session</p>
+  </section>
 
-</section>
+  <!-- LANGUAGE GRID (Balanced 3x2) -->
+  <section class="features">
 
-<footer>
-  © 2026 SmartHire • Technical Interview
-</footer>
+    <!-- Python -->
+    <div class="card reveal" onclick="startInterview('python')">
+      <i class="fa-brands fa-python" style="color: #3776ab;"></i>
+      <span>Python</span>
+      <small>Scripting & Data Structures</small>
+    </div>
 
-<script>
-function startInterview(lang) {
-  window.location.href = `technical-interview.html?lang=${lang}`;
-}
-</script>
+    <!-- Java -->
+    <div class="card reveal" onclick="startInterview('java')">
+      <i class="fa-brands fa-java" style="color: #f89820;"></i>
+      <span>Java</span>
+      <small>OOP & Enterprise Logic</small>
+    </div>
+
+    <!-- JavaScript -->
+    <div class="card reveal" onclick="startInterview('javascript')">
+      <i class="fa-brands fa-js" style="color: #f7df1e;"></i>
+      <span>JavaScript</span>
+      <small>Web Engines & Async Logic</small>
+    </div>
+
+    <!-- C Programming -->
+    <div class="card reveal" onclick="startInterview('c')">
+      <i class="fa-solid fa-c" style="color: #a8b9cc;"></i>
+      <span>C Language</span>
+      <small>Pointers & Memory Mgmt</small>
+    </div>
+
+    <!-- C++ -->
+    <div class="card reveal" onclick="startInterview('cpp')">
+      <i class="fa-solid fa-code" style="color: #00599c;"></i>
+      <span>C++</span>
+      <small>Performance & Systems</small>
+    </div>
+
+    <!-- SQL -->
+    <div class="card reveal" onclick="startInterview('sql')">
+      <i class="fa-solid fa-database" style="color: #00758f;"></i>
+      <span>SQL</span>
+      <small>Database Design & Queries</small>
+    </div>
+
+  </section>
+
+  <footer>
+    © 2026 SmartHire • Technical Interview System
+  </footer>
+
+  <!-- Scripts -->
+  <script src="js/ui.js"></script>
+  <script src="js/auth-guard.js"></script>
+  <script>
+    function startInterview(lang) {
+      window.location.href = `technical-interview.html?lang=${lang}`;
+    }
+  </script>
 
 </body>
 </html>
