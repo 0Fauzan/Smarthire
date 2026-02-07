@@ -13,15 +13,28 @@ import pdfplumber
 from docx import Document
 
 # =========================================
-# 1. DYNAMIC PATH LOGIC
+# 🛑 EXACT PATH LOGIC FOR FOLDER STRUCTURE
 # =========================================
-basedir = os.path.abspath(os.path.dirname(__file__))
-# Moves up one level from /backend and then into /frontend
-frontend_dir = os.path.abspath(os.path.join(basedir, '..', 'frontend'))
+
+# 1. Get the absolute path of the 'backend' folder
+backend_dir = os.path.dirname(os.path.abspath(__file__))
+
+# 2. Get the project root (one level up from backend)
+project_root = os.path.dirname(backend_dir)
+
+# 3. Target the 'frontend' folder
+frontend_dir = os.path.join(project_root, 'frontend')
+
+# DEBUG: This will print in your Render logs so you can verify the path
+print(f"--- DEPLOYMENT PATH DEBUG ---")
+print(f"Backend directory: {backend_dir}")
+print(f"Project root: {project_root}")
+print(f"Targeting Frontend at: {frontend_dir}")
+print(f"Index exists? {os.path.exists(os.path.join(frontend_dir, 'index.html'))}")
+print(f"-----------------------------")
 
 app = Flask(__name__, static_folder=frontend_dir, static_url_path='')
 CORS(app)
-
 # Configuration
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'smarthire_secret_2026')
 app.config['JWT_SECRET_KEY'] = os.getenv('JWT_SECRET_KEY', 'jwt_secret_9988')
