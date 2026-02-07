@@ -263,20 +263,25 @@ def manage_jobs():
     return jsonify([j.to_dict() for j in jobs])
 
 # =========================================
-# 4. STATIC FILE SERVING (Must be at BOTTOM)
+# 🛑 UPDATED STATIC SERVING (CATCH-ALL)
 # =========================================
 
-@app.route('/')
-def serve_index():
-    return send_from_directory(app.static_folder, 'index.html')
-
+@app.route('/', defaults={'path': ''})
 @app.route('/<path:path>')
-def serve_static(path):
-    # If the file exists in frontend folder, serve it
-    if os.path.exists(os.path.join(app.static_folder, path)):
+def serve(path):
+    # 1. Try to serve the specific file (css, js, etc.)
+    if path != "" and os.path.exists(os.path.join(app.static_folder, path)):
         return send_from_directory(app.static_folder, path)
-    # Fallback to index.html for any other route
-    return send_from_directory(app.static_folder, 'index.html')
+    # 2. If it's a page (like /login.html) or the root (/), serve index.html
+    else:
+        # Check if the specific html file exists (e.g. /login.html)
+        if os.path.exists(os.path.join(app.static_folder, path + ".html")):
+             return send_from_directory(app.static_folder, path + ".html")
+        
+        # Default fallback for Single Page App behavior
+        return send_from_directory(app.static_folder, 'index.html')
+
+# ... [Keep all your @app.route('/api/...') endpoints here] ...
 
 if __name__ == '__main__':
     with app.app_context():
