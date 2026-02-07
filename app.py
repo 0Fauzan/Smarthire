@@ -13,28 +13,28 @@ import pdfplumber
 from docx import Document
 
 # =========================================
-# 🛑 EXACT PATH LOGIC FOR FOLDER STRUCTURE
+# 1. FIXED PATH LOGIC (NO MORE 404)
 # =========================================
 
-# 1. Get the absolute path of the 'backend' folder
-backend_dir = os.path.dirname(os.path.abspath(__file__))
+# This is the directory where app.py actually lives on Render (/opt/render/project/src)
+# or locally. We don't go "up" a level unless app.py is inside a subfolder.
+# Based on your logs, app.py is in the root of the 'src' directory.
+PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
 
-# 2. Get the project root (one level up from backend)
-project_root = os.path.dirname(backend_dir)
+# Point to the frontend folder inside the root
+FRONTEND_DIR = os.path.join(PROJECT_ROOT, 'frontend')
+UPLOADS_DIR = os.path.join(PROJECT_ROOT, 'uploads')
 
-# 3. Target the 'frontend' folder
-frontend_dir = os.path.join(project_root, 'frontend')
+# DEBUG LOGGING: This helps you see the truth in the Render Logs
+print(f"--- DEPLOYMENT DEBUG ---")
+print(f"Project Root: {PROJECT_ROOT}")
+print(f"Targeting Frontend at: {FRONTEND_DIR}")
+print(f"Index.html exists? {os.path.exists(os.path.join(FRONTEND_DIR, 'index.html'))}")
+print(f"------------------------")
 
-# DEBUG: This will print in your Render logs so you can verify the path
-print(f"--- DEPLOYMENT PATH DEBUG ---")
-print(f"Backend directory: {backend_dir}")
-print(f"Project root: {project_root}")
-print(f"Targeting Frontend at: {frontend_dir}")
-print(f"Index exists? {os.path.exists(os.path.join(frontend_dir, 'index.html'))}")
-print(f"-----------------------------")
-
-app = Flask(__name__, static_folder=frontend_dir, static_url_path='')
+app = Flask(__name__, static_folder=FRONTEND_DIR, static_url_path='')
 CORS(app)
+
 # Configuration
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'smarthire_secret_2026')
 app.config['JWT_SECRET_KEY'] = os.getenv('JWT_SECRET_KEY', 'jwt_secret_9988')
