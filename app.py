@@ -37,7 +37,14 @@ print(f"------------------------")
 # =========================================
 
 app = Flask(__name__, static_folder=FRONTEND_DIR, static_url_path='')
-CORS(app)
+# Allow requests from your Render frontend URL
+CORS(app, resources={
+    r"/*": {
+        "origins": "*",  # In production, specify your exact domain
+        "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+        "allow_headers": ["Content-Type", "Authorization"]
+    }
+})
 
 # Configuration
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'smarthire_secret_2026')
@@ -439,10 +446,13 @@ def serve(path):
 # 9. APPLICATION STARTUP
 # =========================================
 
-if __name__ == '__main__':
-    with app.app_context():
+with app.app_context():
+    try:
         db.create_all()
-        print("✅ Database tables created")
-    
+        print("✅ Database tables created/verified")
+    except Exception as e:
+        print(f"❌ Database setup error: {e}")
+
+if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))
     app.run(host='0.0.0.0', port=port, debug=False)
